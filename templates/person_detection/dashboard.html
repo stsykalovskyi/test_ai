@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Person Detection Dashboard{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-12">
+    <div class="alert alert-info">
+      <h5 class="alert-heading">📋 Dataset Setup Instructions</h5>
+      <p class="mb-2">To train the model, prepare your dataset:</p>
+      <ol class="mb-2">
+        <li>Create a CSV file at <code>data/processed/person_images.csv</code></li>
+        <li>Place your images in <code>data/processed/person_images/</code></li>
+        <li>CSV format: <code>image_path,label</code> (labels: man, woman, nobody)</li>
+      </ol>
+      <p class="mb-0"><strong>Example:</strong></p>
+      <pre class="mb-0" style="font-size: 0.875rem;">processed/person_images/img_001.jpg,man
+processed/person_images/img_002.jpg,woman
+processed/person_images/img_003.jpg,nobody</pre>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="card-title h4">🔍 Test Person Detection</h2>
+        <p class="text-muted small">Upload an image to detect if it contains a man, woman, or nobody</p>
+        <form id="detect-form" class="row g-3" enctype="multipart/form-data">
+          <div class="col-12">
+            <label class="form-label" for="image-field">Upload Image</label>
+            <input
+              id="image-field"
+              type="file"
+              name="image"
+              class="form-control"
+              accept="image/*"
+              required
+            />
+            <div class="form-text">Supported formats: JPG, PNG, etc.</div>
+          </div>
+          <div class="col-12">
+            <div id="image-preview" class="mb-3" style="display: none;">
+              <img id="preview-img" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px;" />
+            </div>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <span id="detect-btn-text">Detect Person</span>
+              <span id="detect-spinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer bg-body-tertiary">
+        <h3 class="h6 mb-2">Detection Result</h3>
+        <pre id="detect-output" class="output"></pre>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="card-title h4">🚀 Train Model</h2>
+        <p class="text-muted small">Train the person detection model on your dataset</p>
+        <form id="train-form" class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="experiment-name-field">Experiment Name</label>
+            <input
+              id="experiment-name-field"
+              type="text"
+              name="experiment_name"
+              class="form-control"
+              value="person-classifier"
+              readonly
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="epochs-field">Epochs</label>
+            <input
+              id="epochs-field"
+              type="number"
+              name="max_epochs"
+              class="form-control"
+              value="10"
+              min="1"
+              max="100"
+            />
+            <div class="form-text">Recommended: 10-20 epochs</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="lr-field">Learning Rate</label>
+            <input
+              id="lr-field"
+              type="number"
+              name="learning_rate"
+              class="form-control"
+              value="0.001"
+              step="0.0001"
+              min="0"
+            />
+            <div class="form-text">Recommended: 0.001</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="accelerator-field">Device</label>
+            <select id="accelerator-field" name="accelerator" class="form-select">
+              <option value="cpu" selected>CPU</option>
+              <option value="gpu">GPU (CUDA)</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-success" id="train-btn">
+              <span id="train-btn-text">Start Training</span>
+              <span id="train-spinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="clear-train-btn">Clear Output</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer bg-body-tertiary">
+        <h3 class="h6 mb-2">Training Status</h3>
+        <pre id="train-output" class="output">Ready to train. Configure parameters above and click "Start Training".</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-2">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title h5">📊 Model Information</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Architecture:</strong> MobileNetV2 (pre-trained)</p>
+            <p><strong>Classes:</strong> man, woman, nobody</p>
+            <p><strong>Input size:</strong> 224x224 RGB</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Checkpoint location:</strong> <code>artifacts/person-classifier/checkpoints/latest.pth</code></p>
+            <p><strong>Dataset location:</strong> <code>data/processed/person_images.csv</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Image preview
+document.getElementById('image-field').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      document.getElementById('preview-img').src = event.target.result;
+      document.getElementById('image-preview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Detection form
+document.getElementById('detect-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const output = document.getElementById('detect-output');
+  const spinner = document.getElementById('detect-spinner');
+  const btnText = document.getElementById('detect-btn-text');
+
+  output.textContent = 'Processing...';
+  spinner.style.display = 'inline-block';
+  btnText.textContent = 'Processing...';
+
+  const formData = new FormData(this);
+
+  try {
+    const response = await fetch('/api/person_detection/detect/', {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      output.textContent = `✅ Detection Result:\n\n${JSON.stringify(result, null, 2)}`;
+      output.style.color = '#198754';
+    } else {
+      output.textContent = `❌ Error:\n\n${JSON.stringify(result, null, 2)}`;
+      output.style.color = '#dc3545';
+    }
+  } catch (error) {
+    output.textContent = '❌ Error: ' + error.message;
+    output.style.color = '#dc3545';
+  } finally {
+    spinner.style.display = 'none';
+    btnText.textContent = 'Detect Person';
+  }
+});
+
+// Training form
+document.getElementById('train-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const output = document.getElementById('train-output');
+  const spinner = document.getElementById('train-spinner');
+  const btnText = document.getElementById('train-btn-text');
+  const trainBtn = document.getElementById('train-btn');
+
+  output.textContent = 'Training started... This may take several minutes.\n\nPlease wait...';
+  output.style.color = '#0d6efd';
+  spinner.style.display = 'inline-block';
+  btnText.textContent = 'Training...';
+  trainBtn.disabled = true;
+
+  const formData = new FormData(this);
+  const payload = {};
+  for (const [key, value] of formData.entries()) {
+    if (key === 'max_epochs') {
+      payload[key] = parseInt(value);
+    } else if (key === 'learning_rate') {
+      payload[key] = parseFloat(value);
+    } else {
+      payload[key] = value;
+    }
+  }
+
+  try {
+    const response = await fetch('/api/person_detection/train/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      output.textContent = `✅ Training Complete!\n\n${JSON.stringify(result, null, 2)}`;
+      output.style.color = '#198754';
+    } else {
+      output.textContent = `❌ Training Failed:\n\n${JSON.stringify(result, null, 2)}`;
+      output.style.color = '#dc3545';
+    }
+  } catch (error) {
+    output.textContent = '❌ Error: ' + error.message;
+    output.style.color = '#dc3545';
+  } finally {
+    spinner.style.display = 'none';
+    btnText.textContent = 'Start Training';
+    trainBtn.disabled = false;
+  }
+});
+
+// Clear training output
+document.getElementById('clear-train-btn').addEventListener('click', function() {
+  const output = document.getElementById('train-output');
+  output.textContent = 'Ready to train. Configure parameters above and click "Start Training".';
+  output.style.color = '';
+});
+</script>
+{% endblock %}

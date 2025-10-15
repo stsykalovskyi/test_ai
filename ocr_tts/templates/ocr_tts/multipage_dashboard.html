@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Page OCR & Audiobook Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .nav-menu {
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 15px 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .nav-menu a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .nav-menu a.active {
+            background: #667eea;
+            color: white;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .document-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .document-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .document-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 4px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #667eea;
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .pages-list {
+            margin-top: 15px;
+        }
+        .page-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .page-item:hover {
+            background: #e9ecef;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .page-item.processed {
+            border-left-color: #28a745;
+        }
+        .page-item.expanded {
+            background: white;
+            border: 2px solid #667eea;
+            border-left-width: 4px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .page-number {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        .page-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .page-status.done {
+            background: #d4edda;
+            color: #155724;
+        }
+        .page-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .page-details {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .page-details.visible {
+            display: block;
+        }
+        .page-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .page-image-preview {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .text-edit-area {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        .text-edit-area:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .page-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .file-upload-label:hover {
+            background: #5568d3;
+        }
+        .hidden {
+            display: none;
+        }
+        .audio-section {
+            background: #e8f4f8;
+            border: 2px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .audio-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .download-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+        .download-link:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-menu">
+        <a href="/ocr_tts/dashboard/">📄 Одностороінковий</a>
+        <a href="/ocr_tts/multipage/" class="active">📚 Багатосторінковий</a>
+        <a href="/ocr_tts/library/">🗂️ Бібліотека</a>
+    </nav>
+
+    <div class="container">
+        <h1>📚 Multi-Page OCR & Audiobook Generator</h1>
+        <p class="subtitle">Створення аудіокниги з багатосторінкових документів</p>
+
+        <!-- Step 1: Create Document -->
+        <div class="section" id="createDocSection">
+            <h2>Крок 1: Створити новий документ</h2>
+            <div class="form-group">
+                <label>Назва документу</label>
+                <input type="text" id="docTitle" placeholder="Введіть назву книги...">
+            </div>
+            <div class="form-group">
+                <label>Опис</label>
+                <textarea id="docDescription" placeholder="Опис документу (необов'язково)"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Мова TTS (для озвучення)</label>
+                <select id="docLanguage">
+                    <option value="uk">Українська</option>
+                    <option value="en">English</option>
+                    <option value="ru">Русский</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Мови OCR (для розпізнавання тексту)</label>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="ocr_language" value="uk" checked>
+                        <span>Українська</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="ocr_language" value="en">
+                        <span>English</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="ocr_language" value="ru">
+                        <span>Русский</span>
+                    </label>
+                </div>
+                <small style="color: #666; margin-top: 5px; display: block;">Виберіть одну або кілька мов для розпізнавання тексту в зображеннях</small>
+            </div>
+            <div class="form-group">
+                <label>TTS Провайдер</label>
+                <select id="docTtsProvider">
+                    <option value="gtts">Google TTS (gTTS)</option>
+                    <option value="gemini">Google Gemini TTS</option>
+                </select>
+            </div>
+            <div class="form-group hidden" id="voiceGroup">
+                <label>Голос (Gemini)</label>
+                <select id="docTtsVoice">
+                    <option value="Zephyr">Zephyr</option>
+                    <option value="Kore">Kore</option>
+                    <option value="Charon">Charon</option>
+                    <option value="Aoede">Aoede</option>
+                    <option value="Fenrir">Fenrir</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" id="createDocBtn">Створити документ</button>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <!-- Step 2: Add Pages -->
+        <div class="section hidden" id="addPagesSection">
+            <h2>Крок 2: Додати сторінки</h2>
+            <div class="document-info" id="currentDocInfo"></div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                <div style="margin-bottom: 10px;">
+                    <strong>Мови OCR для розпізнавання:</strong>
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; padding: 10px; background: white; border-radius: 6px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="step2_ocr_language" value="uk" id="step2_ocr_uk">
+                        <span>Українська</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="step2_ocr_language" value="en" id="step2_ocr_en">
+                        <span>English</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="step2_ocr_language" value="ru" id="step2_ocr_ru">
+                        <span>Русский</span>
+                    </label>
+                </div>
+                <button class="btn btn-secondary" id="saveOcrLanguagesBtn" style="margin-top: 10px;">💾 Зберегти налаштування мов</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+            <div style="margin: 20px 0;">
+                <label for="pageImageInput" class="file-upload-label">📄 Вибрати зображення сторінки</label>
+                <input type="file" id="pageImageInput" accept="image/*">
+                <button class="btn btn-success" id="processPageBtn" disabled style="margin-left: 10px;">Обробити сторінку (OCR)</button>
+            </div>
+            <div class="pages-list" id="pagesList"></div>
+        </div>
+
+        <!-- Step 3: Generate Audiobook -->
+        <div class="section hidden" id="generateAudioSection">
+            <h2>Крок 3: Згенерувати аудіокнигу</h2>
+            <p class="document-info">Всі сторінки оброблені! Тепер можна згенерувати аудіокнигу з повного тексту.</p>
+            <button class="btn btn-success" id="generateAudioBtn">🎧 Згенерувати аудіокнигу</button>
+            <div id="audioResult" class="hidden audio-section">
+                <h4>✅ Аудіокнига готова!</h4>
+                <audio id="audiobookPlayer" controls></audio>
+                <div style="margin-top: 15px;">
+                    <a id="downloadTextLink" class="download-link" download>📄 Завантажити текст</a>
+                    <a id="downloadAudioLink" class="download-link" download>🎧 Завантажити аудіо</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDocumentId = null;
+        let currentPageId = null;
+
+        // Elements
+        const docTtsProvider = document.getElementById('docTtsProvider');
+        const voiceGroup = document.getElementById('voiceGroup');
+        const createDocBtn = document.getElementById('createDocBtn');
+        const status = document.getElementById('status');
+        const addPagesSection = document.getElementById('addPagesSection');
+        const generateAudioSection = document.getElementById('generateAudioSection');
+        const pageImageInput = document.getElementById('pageImageInput');
+        const processPageBtn = document.getElementById('processPageBtn');
+        const generateAudioBtn = document.getElementById('generateAudioBtn');
+        const saveOcrLanguagesBtn = document.getElementById('saveOcrLanguagesBtn');
+        const progressFill = document.getElementById('progressFill');
+        const pagesList = document.getElementById('pagesList');
+        const currentDocInfo = document.getElementById('currentDocInfo');
+
+        // Check if editing existing document from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const docIdFromUrl = urlParams.get('doc');
+
+        if (docIdFromUrl) {
+            // Load existing document
+            currentDocumentId = parseInt(docIdFromUrl);
+            loadExistingDocument();
+        }
+
+        // Show/hide voice selector
+        docTtsProvider.addEventListener('change', () => {
+            voiceGroup.classList.toggle('hidden', docTtsProvider.value !== 'gemini');
+        });
+
+        // Save OCR languages
+        saveOcrLanguagesBtn.addEventListener('click', async () => {
+            try {
+                // Collect selected OCR languages
+                const ocrLanguageCheckboxes = document.querySelectorAll('input[name="step2_ocr_language"]:checked');
+                const selectedOcrLanguages = Array.from(ocrLanguageCheckboxes).map(cb => cb.value);
+
+                if (selectedOcrLanguages.length === 0) {
+                    showStatus('error', 'Виберіть хоча б одну мову для OCR');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('ocr_languages', selectedOcrLanguages.join(','));
+
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/update/`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Налаштування мов OCR збережено!');
+                } else {
+                    showStatus('error', data.error || 'Помилка збереження');
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        });
+
+        // Load existing document
+        async function loadExistingDocument() {
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const doc = data.document;
+
+                    // Show Step 1 for editing
+                    document.getElementById('createDocSection').classList.remove('hidden');
+
+                    // Populate Step 1 fields with existing document data
+                    document.getElementById('docTitle').value = doc.title || '';
+                    document.getElementById('docDescription').value = doc.description || '';
+                    document.getElementById('docLanguage').value = doc.language || 'uk';
+                    document.getElementById('docTtsProvider').value = doc.tts_provider || 'gtts';
+                    document.getElementById('docTtsVoice').value = doc.tts_voice || 'Zephyr';
+
+                    // Show voice group if Gemini is selected
+                    if (doc.tts_provider === 'gemini') {
+                        voiceGroup.classList.remove('hidden');
+                    }
+
+                    // Set OCR language checkboxes
+                    const ocrLangs = doc.ocr_languages ? doc.ocr_languages.split(',').map(l => l.trim()) : ['uk'];
+                    document.querySelectorAll('input[name="ocr_language"]').forEach(cb => {
+                        cb.checked = ocrLangs.includes(cb.value);
+                    });
+
+                    // Change button text to "Update" instead of "Create"
+                    createDocBtn.textContent = '💾 Оновити налаштування документу';
+
+                    // Show Step 2 as well
+                    addPagesSection.classList.remove('hidden');
+
+                    // Show Step 3 if document is complete
+                    if (doc.is_complete) {
+                        generateAudioSection.classList.remove('hidden');
+                    }
+
+                    // Populate document info
+                    currentDocInfo.innerHTML = `
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                            <strong>Документ:</strong>
+                            <span style="font-size: 18px;">${doc.title || 'Без назви'}</span>
+                        </div>
+                    `;
+
+                    // Load pages
+                    await loadPages();
+                } else {
+                    showStatus('error', 'Документ не знайдено');
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка завантаження документу: ' + error.message);
+            }
+        }
+
+        // Save document settings
+        async function saveDocumentSettings() {
+            try {
+                const formData = new FormData();
+                formData.append('title', document.getElementById('editDocTitle').value);
+
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/update/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Налаштування збережено!');
+                } else {
+                    showStatus('error', data.error);
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        }
+
+        // Create or Update document
+        createDocBtn.addEventListener('click', async () => {
+            // Collect selected OCR languages
+            const ocrLanguageCheckboxes = document.querySelectorAll('input[name="ocr_language"]:checked');
+            const selectedOcrLanguages = Array.from(ocrLanguageCheckboxes).map(cb => cb.value);
+
+            if (selectedOcrLanguages.length === 0) {
+                showStatus('error', 'Виберіть хоча б одну мову для OCR');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('docTitle').value);
+            formData.append('description', document.getElementById('docDescription').value);
+            formData.append('language', document.getElementById('docLanguage').value);
+            formData.append('ocr_languages', selectedOcrLanguages.join(','));
+            formData.append('tts_provider', docTtsProvider.value);
+            formData.append('tts_voice', document.getElementById('docTtsVoice').value);
+
+            try {
+                // Check if we're updating or creating
+                const isUpdate = currentDocumentId !== null;
+                const url = isUpdate
+                    ? `/ocr_tts/api/documents/${currentDocumentId}/update/`
+                    : '/ocr_tts/api/documents/create/';
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    if (!isUpdate) {
+                        currentDocumentId = data.document_id;
+                    }
+                    const message = isUpdate
+                        ? 'Налаштування документу оновлено!'
+                        : `Документ "${data.title || 'Без назви'}" створено!`;
+                    showStatus('success', message);
+
+                    if (!isUpdate) {
+                        document.getElementById('createDocSection').classList.add('hidden');
+                        addPagesSection.classList.remove('hidden');
+                        currentDocInfo.innerHTML = `
+                            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                                <strong>Документ:</strong>
+                                <span style="font-size: 18px;">${data.title || 'Без назви'}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Reload pages to reflect changes
+                        currentDocInfo.innerHTML = `
+                            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                                <strong>Документ:</strong>
+                                <span style="font-size: 18px;">${data.title || 'Без назви'}</span>
+                            </div>
+                        `;
+                    }
+                    loadPages();
+                } else {
+                    showStatus('error', data.error);
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        });
+
+        // Handle page selection
+        pageImageInput.addEventListener('change', () => {
+            processPageBtn.disabled = !pageImageInput.files[0];
+        });
+
+        // Add and process page
+        processPageBtn.addEventListener('click', async () => {
+            const file = pageImageInput.files[0];
+            if (!file) return;
+
+            processPageBtn.disabled = true;
+            showStatus('info', 'Додавання сторінки...');
+
+            try {
+                // Add page
+                const formData = new FormData();
+                formData.append('image', file);
+
+                const addResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/pages/add/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const addData = await addResponse.json();
+
+                if (!addData.success) {
+                    showStatus('error', addData.error);
+                    return;
+                }
+
+                currentPageId = addData.page_id;
+                showStatus('info', `Обробка сторінки ${addData.page_number}...`);
+
+                // Process page (OCR)
+                const processResponse = await fetch(`/ocr_tts/api/pages/${currentPageId}/process/`, {
+                    method: 'POST'
+                });
+                const processData = await processResponse.json();
+
+                if (processData.success) {
+                    showStatus('success', `Сторінка ${processData.page_number} оброблена!`);
+                    pageImageInput.value = '';
+                    processPageBtn.disabled = true;
+                    await loadPages();
+                } else {
+                    showStatus('error', processData.error);
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+            } finally {
+                processPageBtn.disabled = false;
+            }
+        });
+
+        // Load pages
+        async function loadPages() {
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const doc = data.document;
+                    const progress = doc.total_pages > 0 ? (doc.processed_pages / doc.total_pages * 100) : 0;
+                    progressFill.style.width = progress + '%';
+                    progressFill.textContent = `${doc.processed_pages}/${doc.total_pages}`;
+
+                    // Set OCR language checkboxes
+                    const ocrLanguages = doc.ocr_languages ? doc.ocr_languages.split(',').map(l => l.trim()) : ['uk'];
+                    document.getElementById('step2_ocr_uk').checked = ocrLanguages.includes('uk');
+                    document.getElementById('step2_ocr_en').checked = ocrLanguages.includes('en');
+                    document.getElementById('step2_ocr_ru').checked = ocrLanguages.includes('ru');
+
+                    // Load page list
+                    const pagesResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/pages/`);
+                    const pagesData = await pagesResponse.json();
+
+                    pagesList.innerHTML = '';
+                    pagesData.pages.forEach(page => {
+                        const pageItem = document.createElement('div');
+                        pageItem.className = 'page-item' + (page.processed ? ' processed' : '');
+                        pageItem.setAttribute('data-page-id', page.id);
+                        pageItem.innerHTML = `
+                            <div class="page-header">
+                                <span class="page-number">📄 Сторінка ${page.page_number}</span>
+                                <span class="page-status ${page.processed ? 'done' : 'pending'}">
+                                    ${page.processed ? '✓ Оброблено' : '⏳ Очікує'}
+                                </span>
+                            </div>
+                            <div class="page-details" data-page-id="${page.id}">
+                                <div class="page-content-grid">
+                                    <div>
+                                        <h4>Зображення</h4>
+                                        <img src="${page.image_url}" class="page-image-preview" alt="Page ${page.page_number}" id="page-image-${page.id}">
+                                        <input type="file" accept="image/*" class="image-upload-input" data-page-id="${page.id}" id="image-input-${page.id}" style="display: none;">
+                                        <button class="btn btn-secondary change-image-btn" data-page-id="${page.id}" style="margin-top: 10px; width: 100%;">🔄 Замінити зображення</button>
+                                    </div>
+                                    <div>
+                                        <h4>Текст сторінки</h4>
+                                        <textarea class="text-edit-area" data-page-id="${page.id}" placeholder="Текст буде з'явитися після обробки...">${page.text || ''}</textarea>
+                                        <div class="page-actions">
+                                            <button class="btn btn-primary save-text-btn" data-page-id="${page.id}">💾 Зберегти текст</button>
+                                            <button class="btn btn-secondary delete-page-btn" data-page-id="${page.id}" style="background: #dc3545; color: white;">🗑️ Видалити</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        // Toggle expand/collapse on click
+                        const header = pageItem.querySelector('.page-header');
+                        header.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const details = pageItem.querySelector('.page-details');
+                            const isVisible = details.classList.contains('visible');
+
+                            // Close all other pages
+                            document.querySelectorAll('.page-details').forEach(d => d.classList.remove('visible'));
+                            document.querySelectorAll('.page-item').forEach(p => p.classList.remove('expanded'));
+
+                            // Toggle current page
+                            if (!isVisible) {
+                                details.classList.add('visible');
+                                pageItem.classList.add('expanded');
+                            }
+                        });
+
+                        // Save text button
+                        const saveBtn = pageItem.querySelector('.save-text-btn');
+                        if (saveBtn) {
+                            saveBtn.addEventListener('click', async (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const pageId = saveBtn.getAttribute('data-page-id');
+                                const textarea = pageItem.querySelector('.text-edit-area');
+                                console.log('Save button clicked, pageId:', pageId, 'text length:', textarea.value.length);
+                                await savePageText(pageId, textarea.value);
+                            });
+                        } else {
+                            console.error('Save button not found for page');
+                        }
+
+                        // Delete page button
+                        const deleteBtn = pageItem.querySelector('.delete-page-btn');
+                        deleteBtn.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            const pageId = deleteBtn.getAttribute('data-page-id');
+                            if (confirm('Видалити цю сторінку?')) {
+                                await deletePage(pageId);
+                            }
+                        });
+
+                        // Change image button
+                        const changeImageBtn = pageItem.querySelector('.change-image-btn');
+                        const imageInput = pageItem.querySelector('.image-upload-input');
+
+                        changeImageBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            imageInput.click();
+                        });
+
+                        imageInput.addEventListener('change', async (e) => {
+                            const pageId = imageInput.getAttribute('data-page-id');
+                            const file = e.target.files[0];
+                            if (file) {
+                                await updatePageImage(pageId, file);
+                            }
+                        });
+
+                        pagesList.appendChild(pageItem);
+                    });
+
+                    // Show/hide audio generation based on completion status
+                    if (doc.is_complete) {
+                        generateAudioSection.classList.remove('hidden');
+                    } else {
+                        generateAudioSection.classList.add('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading pages:', error);
+            }
+        }
+
+        // Generate audiobook
+        generateAudioBtn.addEventListener('click', async () => {
+            generateAudioBtn.disabled = true;
+            showStatus('info', 'Генерація аудіокниги... Це може зайняти деякий час.');
+
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/generate-audio/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Аудіокнига згенерована!');
+                    document.getElementById('audiobookPlayer').src = data.combined_audio_url;
+                    document.getElementById('downloadTextLink').href = data.combined_text_url;
+                    document.getElementById('downloadAudioLink').href = data.combined_audio_url;
+                    document.getElementById('audioResult').classList.remove('hidden');
+                } else {
+                    showStatus('error', data.error);
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+            } finally {
+                generateAudioBtn.disabled = false;
+            }
+        });
+
+        // Save page text
+        async function savePageText(pageId, text) {
+            console.log('savePageText called with pageId:', pageId);
+            showStatus('info', 'Збереження тексту...');
+
+            try {
+                const formData = new FormData();
+                formData.append('text_content', text);
+
+                const url = `/ocr_tts/api/pages/${pageId}/update-text/`;
+                console.log('Sending POST to:', url);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    showStatus('success', 'Текст збережено!');
+                } else {
+                    showStatus('error', data.error || 'Невідома помилка');
+                }
+            } catch (error) {
+                console.error('Error in savePageText:', error);
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        }
+
+        // Update page image and reprocess
+        async function updatePageImage(pageId, imageFile) {
+            showStatus('info', 'Оновлення зображення та обробка OCR...');
+
+            try {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+
+                const url = `/ocr_tts/api/pages/${pageId}/update-image/`;
+                console.log('Sending image update to:', url);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    showStatus('success', 'Зображення оновлено та текст витягнуто!');
+
+                    // Update the image preview
+                    const imgElement = document.getElementById(`page-image-${pageId}`);
+                    if (imgElement) {
+                        imgElement.src = data.image_url + '?t=' + new Date().getTime(); // Cache bust
+                    }
+
+                    // Update the textarea with new text
+                    const textarea = document.querySelector(`.text-edit-area[data-page-id="${pageId}"]`);
+                    if (textarea) {
+                        textarea.value = data.text || '';
+                    }
+
+                    // Reload pages to update status
+                    await loadPages();
+                } else {
+                    showStatus('error', data.error || 'Невідома помилка');
+                }
+            } catch (error) {
+                console.error('Error in updatePageImage:', error);
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        }
+
+        // Delete page
+        async function deletePage(pageId) {
+            showStatus('info', 'Видалення сторінки...');
+
+            try {
+                const response = await fetch(`/ocr_tts/api/pages/${pageId}/delete/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Сторінку видалено!');
+                    await loadPages(); // Reload page list
+                } else {
+                    showStatus('error', data.error);
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        }
+
+        function showStatus(type, message) {
+            status.className = 'status ' + type;
+            status.textContent = message;
+            status.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

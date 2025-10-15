@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Дашборд відмінювання{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="card-title h4">Тестування відмінювання</h2>
+        <form id="inflect-form" class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="lemma-field">Початкова форма (lemma)</label>
+            <input
+              id="lemma-field"
+              type="text"
+              name="lemma"
+              class="form-control"
+              placeholder="Наприклад, Полковник Шевченко"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="case-field">Відмінок</label>
+            <select id="case-field" name="target_case" class="form-select" required>
+              {% for case in cases %}
+              <option value="{{ case }}">{{ case|title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="title-field">Титул / звання (опційно)</label>
+            <input
+              id="title-field"
+              type="text"
+              name="title"
+              class="form-control"
+              placeholder="Наприклад, д-р, проф."
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="gender-field">Рід (опційно)</label>
+            <select id="gender-field" name="gender" class="form-select">
+              <option value="">-</option>
+              {% for gender in genders %}
+              <option value="{{ gender }}">{{ gender }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="animacy-field">Істота (опційно)</label>
+            <select id="animacy-field" name="animacy" class="form-select">
+              <option value="">-</option>
+              {% for flag in animacy %}
+              <option value="{{ flag }}">{{ flag }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Виконати відмінювання</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer bg-body-tertiary">
+        <h3 class="h6 mb-2">Результат</h3>
+        <pre id="inflect-output" class="output"></pre>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="card-title h4">Запуск навчання</h2>
+        <form id="train-form" class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="experiment-name-field">Назва експерименту</label>
+            <input
+              id="experiment-name-field"
+              type="text"
+              name="experiment_name"
+              class="form-control"
+              value="ukrainian-inflector"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="epochs-field">Епохи</label>
+            <input
+              id="epochs-field"
+              type="number"
+              name="max_epochs"
+              class="form-control"
+              value="10"
+              min="1"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="batch-field">Batch size</label>
+            <input
+              id="batch-field"
+              type="number"
+              name="batch_size"
+              class="form-control"
+              value="32"
+              min="1"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="lr-field">Learning rate</label>
+            <input
+              id="lr-field"
+              type="number"
+              name="learning_rate"
+              class="form-control"
+              value="0.0005"
+              step="0.0001"
+              min="0"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="accelerator-field">Акселератор</label>
+            <select id="accelerator-field" name="accelerator" class="form-select">
+              <option value="cpu" selected>CPU</option>
+              <option value="gpu">GPU</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary">Старт навчання (stub)</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer bg-body-tertiary">
+        <h3 class="h6 mb-2">Статус тренування</h3>
+        <pre id="train-output" class="output"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

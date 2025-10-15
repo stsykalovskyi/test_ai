@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR & Text-to-Speech Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .nav-menu {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 15px 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .nav-menu a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .nav-menu a.active {
+            background: #667eea;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section input[type="file"] {
+            display: none;
+        }
+        .upload-label {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        .upload-label:hover {
+            background: #5568d3;
+        }
+        .language-select {
+            margin: 20px 0;
+        }
+        .language-select select {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .process-btn {
+            padding: 12px 30px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .process-btn:hover {
+            background: #653a8a;
+        }
+        .process-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .preview-area {
+            margin: 20px 0;
+            display: none;
+        }
+        .preview-area img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.processing {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .results-section {
+            margin-top: 30px;
+        }
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .result-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .text-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .download-links {
+            margin-top: 15px;
+        }
+        .download-btn, .play-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            margin-right: 10px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .download-btn:hover, .play-btn:hover {
+            background: #5568d3;
+        }
+        .documents-list {
+            margin-top: 40px;
+        }
+        .document-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .document-thumbnail {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .document-info {
+            flex: 1;
+        }
+        .document-info h4 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .document-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-menu">
+        <a href="/ocr_tts/dashboard/" class="active">📄 Одностороінковий</a>
+        <a href="/ocr_tts/multipage/">📚 Багатосторінковий</a>
+        <a href="/ocr_tts/library/">🗂️ Бібліотека</a>
+    </nav>
+
+    <div class="container">
+        <h1>OCR & Text-to-Speech</h1>
+        <p class="subtitle">Розпізнавання тексту з зображень та перетворення в аудіо</p>
+
+        <div class="upload-section">
+            <label for="imageInput" class="upload-label">Вибрати зображення</label>
+            <input type="file" id="imageInput" accept="image/*">
+
+            <div class="preview-area" id="previewArea">
+                <img id="imagePreview" src="" alt="Preview">
+            </div>
+
+            <div class="language-select">
+                <label for="languageSelect">Мова TTS (озвучення): </label>
+                <select id="languageSelect">
+                    <option value="uk">Українська</option>
+                    <option value="en">English</option>
+                    <option value="ru">Русский</option>
+                </select>
+            </div>
+
+            <div class="language-select">
+                <label style="display: block; margin-bottom: 10px;">Мови OCR (розпізнавання):</label>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; padding: 10px; background: #f8f9fa; border-radius: 6px; margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="ocr_language" value="uk" checked>
+                        <span>Українська</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="ocr_language" value="en">
+                        <span>English</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="ocr_language" value="ru">
+                        <span>Русский</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="language-select">
+                <label for="ttsProviderSelect">TTS Провайдер: </label>
+                <select id="ttsProviderSelect">
+                    <option value="gtts">Google TTS (gTTS)</option>
+                    <option value="gemini">Google Gemini TTS</option>
+                </select>
+            </div>
+
+            <div class="language-select" id="voiceSelectContainer" style="display: none;">
+                <label for="voiceSelect">Голос (Gemini): </label>
+                <select id="voiceSelect">
+                    <option value="Zephyr">Zephyr</option>
+                    <option value="Kore">Kore</option>
+                    <option value="Charon">Charon</option>
+                    <option value="Aoede">Aoede</option>
+                    <option value="Fenrir">Fenrir</option>
+                </select>
+            </div>
+
+            <button id="processBtn" class="process-btn" disabled>Обробити зображення</button>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div id="resultsSection" class="results-section" style="display: none;">
+            <div class="result-card">
+                <h3>Розпізнаний текст</h3>
+                <div id="textPreview" class="text-preview"></div>
+                <div class="download-links">
+                    <a id="textDownload" href="#" class="download-btn" download>Завантажити текст</a>
+                    <a id="audioDownload" href="#" class="download-btn" download>Завантажити аудіо</a>
+                </div>
+                <audio id="audioPlayer" controls></audio>
+            </div>
+        </div>
+
+        <div class="documents-list">
+            <h2>Оброблені документи</h2>
+            <div id="documentsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewArea = document.getElementById('previewArea');
+        const processBtn = document.getElementById('processBtn');
+        const languageSelect = document.getElementById('languageSelect');
+        const status = document.getElementById('status');
+        const resultsSection = document.getElementById('resultsSection');
+        const textPreview = document.getElementById('textPreview');
+        const textDownload = document.getElementById('textDownload');
+        const audioDownload = document.getElementById('audioDownload');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const documentsList = document.getElementById('documentsList');
+        const ttsProviderSelect = document.getElementById('ttsProviderSelect');
+        const voiceSelectContainer = document.getElementById('voiceSelectContainer');
+        const voiceSelect = document.getElementById('voiceSelect');
+
+        // Show/hide voice selector based on TTS provider
+        ttsProviderSelect.addEventListener('change', function() {
+            if (ttsProviderSelect.value === 'gemini') {
+                voiceSelectContainer.style.display = 'block';
+            } else {
+                voiceSelectContainer.style.display = 'none';
+            }
+        });
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewArea.style.display = 'block';
+                    processBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        processBtn.addEventListener('click', async function() {
+            const file = imageInput.files[0];
+            if (!file) return;
+
+            // Collect selected OCR languages
+            const ocrLanguageCheckboxes = document.querySelectorAll('input[name="ocr_language"]:checked');
+            const selectedOcrLanguages = Array.from(ocrLanguageCheckboxes).map(cb => cb.value);
+
+            if (selectedOcrLanguages.length === 0) {
+                showStatus('error', 'Виберіть хоча б одну мову для OCR');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('language', languageSelect.value);
+            formData.append('ocr_languages', selectedOcrLanguages.join(','));
+            formData.append('tts_provider', ttsProviderSelect.value);
+            formData.append('tts_voice', voiceSelect.value);
+
+            processBtn.disabled = true;
+            showStatus('processing', 'Обробка зображення...');
+            resultsSection.style.display = 'none';
+
+            try {
+                const response = await fetch('/ocr_tts/api/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Зображення успішно оброблено!');
+                    displayResults(data);
+                    loadDocuments();
+                } else {
+                    showStatus('error', 'Помилка: ' + (data.error || 'Невідома помилка'));
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка з\'єднання: ' + error.message);
+            } finally {
+                processBtn.disabled = false;
+            }
+        });
+
+        function showStatus(type, message) {
+            status.className = 'status ' + type;
+            status.textContent = message;
+            status.style.display = 'block';
+        }
+
+        function displayResults(data) {
+            textPreview.textContent = data.text;
+            textDownload.href = data.text_file_url;
+            audioDownload.href = data.audio_file_url;
+            audioPlayer.src = data.audio_file_url;
+            resultsSection.style.display = 'block';
+        }
+
+        async function loadDocuments() {
+            try {
+                const response = await fetch('/ocr_tts/api/documents/');
+                const data = await response.json();
+
+                documentsList.innerHTML = '';
+                data.documents.forEach(doc => {
+                    const item = document.createElement('div');
+                    item.className = 'document-item';
+
+                    // Parse OCR languages
+                    const ocrLangs = doc.ocr_languages ? doc.ocr_languages.split(',') : ['uk'];
+
+                    item.innerHTML = `
+                        <img src="${doc.image_url}" class="document-thumbnail" alt="Document">
+                        <div class="document-info">
+                            <h4>Документ #${doc.id}</h4>
+                            <p>Завантажено: ${new Date(doc.uploaded_at).toLocaleString('uk-UA')}</p>
+                            <p>${doc.text || 'Текст відсутній'}</p>
+                            <div class="download-links">
+                                ${doc.text_file_url ? `<a href="${doc.text_file_url}" class="download-btn" download>Текст</a>` : ''}
+                                ${doc.audio_file_url ? `<a href="${doc.audio_file_url}" class="download-btn" download>Аудіо</a>` : ''}
+                            </div>
+                            ${doc.audio_file_url ? `<audio src="${doc.audio_file_url}" controls></audio>` : ''}
+
+                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                                <strong style="display: block; margin-bottom: 8px;">Мови OCR:</strong>
+                                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="doc-ocr-lang" data-doc-id="${doc.id}" value="uk" ${ocrLangs.includes('uk') ? 'checked' : ''}>
+                                        <span>Українська</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="doc-ocr-lang" data-doc-id="${doc.id}" value="en" ${ocrLangs.includes('en') ? 'checked' : ''}>
+                                        <span>English</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                                        <input type="checkbox" class="doc-ocr-lang" data-doc-id="${doc.id}" value="ru" ${ocrLangs.includes('ru') ? 'checked' : ''}>
+                                        <span>Русский</span>
+                                    </label>
+                                </div>
+                                <button class="download-btn reprocess-doc-btn" data-doc-id="${doc.id}" style="background: #667eea; padding: 8px 15px;">
+                                    🔄 Повторно обробити з новими мовами
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    documentsList.appendChild(item);
+                });
+
+                // Add event listeners for reprocess buttons
+                document.querySelectorAll('.reprocess-doc-btn').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const docId = this.getAttribute('data-doc-id');
+                        await reprocessDocument(docId);
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading documents:', error);
+            }
+        }
+
+        // Reprocess document with new OCR languages
+        async function reprocessDocument(docId) {
+            try {
+                // Get selected OCR languages for this document
+                const checkboxes = document.querySelectorAll(`.doc-ocr-lang[data-doc-id="${docId}"]:checked`);
+                const selectedLangs = Array.from(checkboxes).map(cb => cb.value);
+
+                if (selectedLangs.length === 0) {
+                    showStatus('error', 'Виберіть хоча б одну мову для OCR');
+                    return;
+                }
+
+                showStatus('processing', 'Повторна обробка документу...');
+
+                // First, get the document to get the image
+                const docResponse = await fetch(`/ocr_tts/api/documents/`);
+                const docData = await docResponse.json();
+                const doc = docData.documents.find(d => d.id == docId);
+
+                if (!doc) {
+                    showStatus('error', 'Документ не знайдено');
+                    return;
+                }
+
+                // Fetch the image and reprocess
+                const imageResponse = await fetch(doc.image_url);
+                const imageBlob = await imageResponse.blob();
+
+                const formData = new FormData();
+                formData.append('image', imageBlob, 'reprocess.jpg');
+                formData.append('language', doc.language);
+                formData.append('ocr_languages', selectedLangs.join(','));
+                formData.append('tts_provider', doc.tts_provider);
+                formData.append('tts_voice', doc.tts_voice || 'Zephyr');
+
+                const reprocessResponse = await fetch('/ocr_tts/api/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await reprocessResponse.json();
+
+                if (result.success) {
+                    showStatus('success', 'Документ успішно повторно оброблено!');
+                    loadDocuments();
+                } else {
+                    showStatus('error', 'Помилка: ' + (result.error || 'Невідома помилка'));
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка обробки: ' + error.message);
+            }
+        }
+
+        loadDocuments();
+    </script>
+</body>
+</html>

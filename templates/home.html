@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="card-title h4">Ласкаво просимо</h2>
+        <p class="card-text">
+          Проєкт <strong>test_ai</strong> створює морфологічну модель української мови
+          для відмінювання імен, звань і посад. Використовуйте інтерактивний дашборд
+          для експериментів або викликайте REST API безпосередньо.
+        </p>
+        <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-action d-flex align-items-center" href="{{ dashboard_url }}">
+            <span class="badge bg-primary-subtle text-primary-emphasis me-3">UI</span>
+            Дашборд відмінювання
+          </a>
+          <a class="list-group-item list-group-item-action d-flex align-items-center" href="{{ api_url }}" target="_blank" rel="noopener">
+            <span class="badge bg-success-subtle text-success-emphasis me-3">API</span>
+            REST endpoint /api/morphology/inflect/
+          </a>
+          <a class="list-group-item list-group-item-action d-flex align-items-center" href="{{ docs_url }}" target="_blank" rel="noopener">
+            <span class="badge bg-info-subtle text-info-emphasis me-3">Docs</span>
+            План розвитку та документація
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h3 class="card-title h5">Швидкий початок</h3>
+        <ol class="ps-3">
+          <li>Скористайтеся дашбордом, щоб протестувати відмінювання (stub результат).</li>
+          <li>Натисніть "Старт навчання" для генерації тестового чекпойнту.</li>
+          <li>Реалізуйте справжній пайплайн у модулі <code>ml/</code> та сервісі <code>MorphologicalInflector</code>.</li>
+        </ol>
+        <a class="btn btn-outline-primary mt-2" href="{{ dashboard_url }}">Перейти до дашборду</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

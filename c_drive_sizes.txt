@@ -1,0 +1,13 @@
+0G	/mnt/c/$Recycle.Bin
+0G	/mnt/c/Config.Msi
+0G	/mnt/c/PerfLogs
+0G	/mnt/c/System Volume Information
+0G	/mnt/c/inetpub
+1G	/mnt/c/Recovery
+2G	/mnt/c/SWSetup
+5G	/mnt/c/ProgramData
+14G	/mnt/c/Program Files (x86)
+42G	/mnt/c/Program Files
+57G	/mnt/c/Users
+4352867177G	/mnt/c/Windows
+4352867296G	/mnt/c

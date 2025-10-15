@@ -1,0 +1,21 @@
+# Virtual environments
+.venv/
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+staticfiles/
+media/
+
+# Environment and data
+.env
+.cache/
+artifacts/
+data/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
