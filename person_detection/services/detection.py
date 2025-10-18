@@ -4,14 +4,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
-import torch
 from django.conf import settings
 from PIL import Image
 
-from ml.models.person_classifier import PersonClassifierModel
 from ..schemas import PersonDetectionResult
+
+if TYPE_CHECKING:
+    from ml.models.person_classifier import PersonClassifierModel
+    import torch
 
 
 @dataclass
@@ -19,12 +21,15 @@ class PersonDetectionService:
     """Facade for loading and executing person detection model."""
 
     model_path: Optional[str] = None
-    model: Optional[PersonClassifierModel] = field(init=False, default=None)
+    model: Optional["PersonClassifierModel"] = field(init=False, default=None)
 
     def __post_init__(self):
         self.checkpoint_path = self._resolve_model_path()
         if self.checkpoint_path and self.checkpoint_path.exists():
             try:
+                # Lazy import to avoid loading heavy dependencies at module import time
+                import torch
+                from ml.models.person_classifier import PersonClassifierModel
                 # Always use CPU for inference to avoid CUDA issues
                 device = "cuda" if torch.cuda.is_available() else "cpu"
                 self.model = PersonClassifierModel.load(self.checkpoint_path, device=device)

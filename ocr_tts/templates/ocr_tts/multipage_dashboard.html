@@ -12,101 +12,156 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f5f5;
             min-height: 100vh;
             padding: 20px;
+            color: #333;
         }
         .nav-menu {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto 20px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 12px 20px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
-            align-items: center;
         }
         .nav-menu a {
             text-decoration: none;
-            color: #667eea;
+            color: #666;
             font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.3s;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 14px;
         }
         .nav-menu a:hover {
-            background: #667eea;
-            color: white;
+            background: #f0f0f0;
+            color: #333;
         }
         .nav-menu a.active {
-            background: #667eea;
+            background: #333;
             color: white;
         }
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             padding: 30px;
         }
         h1 {
             color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 600;
         }
         .subtitle {
-            color: #666;
+            color: #999;
             margin-bottom: 30px;
+            font-size: 14px;
         }
-        .section {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .step-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            overflow: hidden;
         }
-        .section h2 {
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #fafafa;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        .step-header:hover {
+            background: #f5f5f5;
+        }
+        .step-header h2 {
             color: #333;
-            font-size: 20px;
-            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .step-toggle {
+            color: #999;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+        .step-container.expanded .step-toggle {
+            transform: rotate(180deg);
+        }
+        .step-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .step-container.expanded .step-content {
+            padding: 20px;
+            max-height: none;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 500;
             color: #333;
+            font-size: 14px;
         }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #333;
         }
         .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             font-weight: 500;
         }
         .btn-primary {
-            background: #667eea;
+            background: #333;
             color: white;
         }
         .btn-primary:hover {
-            background: #5568d3;
+            background: #555;
         }
         .btn-success {
             background: #28a745;
@@ -116,94 +171,101 @@
             background: #218838;
         }
         .btn-secondary {
-            background: #6c757d;
+            background: #999;
             color: white;
         }
         .btn-secondary:hover {
-            background: #5a6268;
+            background: #777;
         }
         .btn:disabled {
-            background: #ccc;
+            background: #ddd;
+            color: #999;
             cursor: not-allowed;
         }
         .status {
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 4px;
             display: none;
+            font-size: 14px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            min-width: 300px;
+            max-width: 400px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
         .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #f0f9f4;
+            color: #28a745;
+            border: 1px solid #28a745;
         }
         .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fef5f5;
+            color: #dc3545;
+            border: 1px solid #dc3545;
         }
         .status.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        .document-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-        .document-card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
         }
         .document-info {
             color: #666;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
         .progress-bar {
-            background: #e0e0e0;
+            background: #f0f0f0;
             border-radius: 4px;
-            height: 20px;
-            margin: 10px 0;
+            height: 8px;
+            margin: 12px 0;
             overflow: hidden;
         }
         .progress-fill {
-            background: #667eea;
+            background: #333;
             height: 100%;
             transition: width 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 600;
         }
         .pages-list {
-            margin-top: 15px;
+            margin-top: 16px;
         }
         .page-item {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
         .page-item:hover {
-            background: #e9ecef;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #f5f5f5;
         }
         .page-item.processed {
-            border-left-color: #28a745;
+            border-left: 3px solid #28a745;
         }
         .page-item.expanded {
             background: white;
-            border: 2px solid #667eea;
-            border-left-width: 4px;
+            border: 1px solid #333;
         }
         .page-header {
             display: flex;
@@ -211,28 +273,29 @@
             align-items: center;
         }
         .page-number {
-            font-weight: bold;
+            font-weight: 600;
             color: #333;
-            font-size: 16px;
+            font-size: 14px;
         }
         .page-status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: 500;
         }
         .page-status.done {
-            background: #d4edda;
-            color: #155724;
+            background: #f0f9f4;
+            color: #28a745;
         }
         .page-status.pending {
-            background: #fff3cd;
-            color: #856404;
+            background: #fffbf0;
+            color: #ff9800;
         }
         .page-details {
             display: none;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
         }
         .page-details.visible {
             display: block;
@@ -240,78 +303,274 @@
         .page-content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 16px;
         }
         .page-image-preview {
             max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
         }
         .text-edit-area {
             width: 100%;
-            min-height: 300px;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 14px;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
             line-height: 1.6;
             resize: vertical;
+            overflow-y: hidden;
         }
         .text-edit-area:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #333;
         }
         .page-actions {
-            margin-top: 15px;
+            margin-top: 12px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
         input[type="file"] {
             display: none;
-        }
-        .file-upload-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .file-upload-label:hover {
-            background: #5568d3;
         }
         .hidden {
             display: none;
         }
         .audio-section {
-            background: #e8f4f8;
-            border: 2px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 16px;
+            border-radius: 4px;
             margin-top: 15px;
         }
         .audio-section h4 {
-            color: #667eea;
-            margin-bottom: 10px;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
         }
         audio {
             width: 100%;
-            margin: 10px 0;
+            margin: 12px 0;
         }
         .download-link {
             display: inline-block;
-            padding: 8px 16px;
-            background: #667eea;
+            padding: 8px 14px;
+            background: #333;
             color: white;
             text-decoration: none;
-            border-radius: 6px;
-            margin-right: 10px;
-            transition: background 0.3s;
+            border-radius: 4px;
+            margin-right: 8px;
+            transition: background 0.2s;
+            font-size: 13px;
         }
         .download-link:hover {
-            background: #5568d3;
+            background: #555;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+        .block-item {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .block-item.has-audio {
+            border-left: 3px solid #28a745;
+        }
+        .block-number {
+            font-weight: 600;
+            color: #333;
+            min-width: 60px;
+            font-size: 13px;
+        }
+        .block-content {
+            flex: 1;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+        .block-text {
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .block-text.collapsed {
+            max-height: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+        .block-text.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, #fafafa);
+        }
+        .toggle-text-btn {
+            color: #007bff;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: underline;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        .toggle-text-btn:hover {
+            color: #0056b3;
+        }
+        .block-actions {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-small.btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-small.btn-primary:hover {
+            background: #0056b3;
+        }
+        .btn-small.btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-small.btn-secondary:hover {
+            background: #545b62;
+        }
+        .btn-small:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .block-status {
+            font-size: 11px;
+            color: #999;
+        }
+        .block-status.generating {
+            color: #ff9800;
+        }
+        .block-status.completed {
+            color: #28a745;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .modal-overlay.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .modal-body {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .modal-btn-primary {
+            background: #333;
+            color: white;
+        }
+        .modal-btn-primary:hover {
+            background: #555;
+        }
+        .modal-btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .modal-btn-danger:hover {
+            background: #c82333;
+        }
+        .modal-btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .modal-btn-secondary:hover {
+            background: #e0e0e0;
         }
     </style>
 </head>
@@ -322,13 +581,31 @@
         <a href="/ocr_tts/library/">🗂️ Бібліотека</a>
     </nav>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header" id="confirmModalTitle">Підтвердження</div>
+            <div class="modal-body" id="confirmModalMessage"></div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" id="confirmModalCancel">Скасувати</button>
+                <button class="modal-btn modal-btn-primary" id="confirmModalOk">OK</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <h1>📚 Multi-Page OCR & Audiobook Generator</h1>
+        <h1>Багатосторінковий OCR</h1>
         <p class="subtitle">Створення аудіокниги з багатосторінкових документів</p>
 
+        <div id="status" class="status"></div>
+
         <!-- Step 1: Create Document -->
-        <div class="section" id="createDocSection">
-            <h2>Крок 1: Створити новий документ</h2>
+        <div class="step-container" id="createDocSection">
+            <div class="step-header" onclick="toggleStep('createDocSection')">
+                <h2><span class="step-number">1</span> Налаштування документу</h2>
+                <span class="step-toggle">▼</span>
+            </div>
+            <div class="step-content">
             <div class="form-group">
                 <label>Назва документу</label>
                 <input type="text" id="docTitle" placeholder="Введіть назву книги...">
@@ -381,57 +658,178 @@
                 </select>
             </div>
             <button class="btn btn-primary" id="createDocBtn">Створити документ</button>
+            </div>
         </div>
 
-        <div id="status" class="status"></div>
-
         <!-- Step 2: Add Pages -->
-        <div class="section hidden" id="addPagesSection">
-            <h2>Крок 2: Додати сторінки</h2>
-            <div class="document-info" id="currentDocInfo"></div>
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                <div style="margin-bottom: 10px;">
-                    <strong>Мови OCR для розпізнавання:</strong>
-                </div>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; padding: 10px; background: white; border-radius: 6px;">
-                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                        <input type="checkbox" name="step2_ocr_language" value="uk" id="step2_ocr_uk">
-                        <span>Українська</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                        <input type="checkbox" name="step2_ocr_language" value="en" id="step2_ocr_en">
-                        <span>English</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                        <input type="checkbox" name="step2_ocr_language" value="ru" id="step2_ocr_ru">
-                        <span>Русский</span>
-                    </label>
-                </div>
-                <button class="btn btn-secondary" id="saveOcrLanguagesBtn" style="margin-top: 10px;">💾 Зберегти налаштування мов</button>
+        <div class="step-container hidden" id="addPagesSection">
+            <div class="step-header" onclick="toggleStep('addPagesSection')">
+                <h2><span class="step-number">2</span> Додати сторінки</h2>
+                <span class="step-toggle">▼</span>
             </div>
+            <div class="step-content">
+            <div class="document-info" id="currentDocInfo"></div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill">0%</div>
             </div>
-            <div style="margin: 20px 0;">
-                <label for="pageImageInput" class="file-upload-label">📄 Вибрати зображення сторінки</label>
-                <input type="file" id="pageImageInput" accept="image/*">
-                <button class="btn btn-success" id="processPageBtn" disabled style="margin-left: 10px;">Обробити сторінку (OCR)</button>
+            <div style="margin: 20px 0; display: flex; gap: 10px;">
+                <input type="file" id="pageImageInput" accept="image/*" style="display: none;">
+                <button class="btn btn-primary" id="selectPageImageBtn">📄 Вибрати зображення сторінки</button>
+                <button class="btn btn-success" id="processPageBtn" disabled>Обробити сторінку (OCR)</button>
             </div>
             <div class="pages-list" id="pagesList"></div>
+            </div>
         </div>
 
-        <!-- Step 3: Generate Audiobook -->
-        <div class="section hidden" id="generateAudioSection">
-            <h2>Крок 3: Згенерувати аудіокнигу</h2>
-            <p class="document-info">Всі сторінки оброблені! Тепер можна згенерувати аудіокнигу з повного тексту.</p>
-            <button class="btn btn-success" id="generateAudioBtn">🎧 Згенерувати аудіокнигу</button>
-            <div id="audioResult" class="hidden audio-section">
-                <h4>✅ Аудіокнига готова!</h4>
-                <audio id="audiobookPlayer" controls></audio>
-                <div style="margin-top: 15px;">
-                    <a id="downloadTextLink" class="download-link" download>📄 Завантажити текст</a>
-                    <a id="downloadAudioLink" class="download-link" download>🎧 Завантажити аудіо</a>
+        <!-- Step 3: Generate Combined Text -->
+        <div class="step-container hidden" id="generateTextSection">
+            <div class="step-header" onclick="toggleStep('generateTextSection')">
+                <h2><span class="step-number">3</span> Згенерувати фінальний текст</h2>
+                <span class="step-toggle">▼</span>
+            </div>
+            <div class="step-content">
+            <p class="document-info" id="step3Message">Завантажте сторінки для створення фінального тексту.</p>
+            <p style="color: #999; font-size: 13px; margin-top: 10px; line-height: 1.5;">
+                Текст після останньої крапки на сторінці переноситься на наступну сторінку. Блоки тексту розділяються маркерами ===PAGE_X===.
+            </p>
+            <button class="btn btn-primary" id="generateTextBtn">Згенерувати фінальний текст</button>
+            <div id="textResult" class="hidden audio-section">
+                <h4>Фінальний текст готовий</h4>
+                <div style="margin-top: 12px;">
+                    <a id="downloadTextLink" class="download-link" download>Завантажити текст</a>
+                    <a id="viewTextBtn" class="download-link" style="background: #999; cursor: pointer;">Переглянути текст</a>
                 </div>
+                <div id="textPreview" class="hidden" style="margin-top: 12px; padding: 12px; background: #f9f9f9; border-radius: 4px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; font-family: Monaco, monospace; font-size: 12px; border: 1px solid #e0e0e0;"></div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Generate Text Blocks & Audio -->
+        <div class="step-container hidden" id="generateTextBlocksSection">
+            <div class="step-header" onclick="toggleStep('generateTextBlocksSection')">
+                <h2><span class="step-number">4</span> Розділити текст на блоки та згенерувати аудіо</h2>
+                <span class="step-toggle">▼</span>
+            </div>
+            <div class="step-content">
+            <p class="document-info" id="step4Message">Спочатку згенеруйте фінальний текст (Крок 3).</p>
+            <p style="color: #999; font-size: 13px; margin-top: 10px; line-height: 1.5;">
+                Текст буде розділений на блоки по сторінках, кожен блок зберігається в базу даних.
+            </p>
+            <button class="btn btn-primary" id="generateTextBlocksBtn">Розділити на блоки</button>
+
+            <!-- Text blocks progress -->
+            <div id="textBlocksProgress" class="hidden" style="margin-top: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-size: 13px; color: #666;">Розділення тексту...</span>
+                    <span id="textBlocksProgressText" style="font-size: 13px; font-weight: 600; color: #333;">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="textBlocksProgressFill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <p id="textBlocksProgressStatus" style="font-size: 12px; color: #999; margin-top: 6px;"></p>
+            </div>
+
+            <div id="textBlocksResult" class="hidden" style="margin-top: 16px; padding: 12px; background: #f0f8ff; border-radius: 4px; border: 1px solid #d0e8ff;">
+                <p style="font-size: 13px; color: #333; font-weight: 600;">✓ Текст розділений на блоки</p>
+            </div>
+
+            <!-- Text Blocks List -->
+            <div id="textBlocksList" class="hidden" style="margin-top: 20px;">
+                <h3 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px;">Текстові блоки:</h3>
+                <div id="blocksContainer"></div>
+            </div>
+
+            <!-- Step 4b: Generate Block Audio -->
+            <div id="blockAudioSection" class="hidden" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <p class="document-info" id="step4bMessage">Згенеруйте аудіо для кожного текстового блоку.</p>
+                <p style="color: #999; font-size: 13px; margin-top: 10px; line-height: 1.5;">
+                    Можна згенерувати аудіо для кожного блоку окремо, або для всіх блоків одразу.
+                </p>
+                <button class="btn btn-success" id="generateBlockAudioBtn">Згенерувати аудіо для всіх блоків</button>
+
+                <!-- Block audio progress -->
+                <div id="blockAudioProgress" class="hidden" style="margin-top: 16px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-size: 13px; color: #666;">Генерація аудіо для блоків...</span>
+                        <span id="blockAudioProgressText" style="font-size: 13px; font-weight: 600; color: #333;">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="blockAudioProgressFill" class="progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <p id="blockAudioProgressStatus" style="font-size: 12px; color: #999; margin-top: 6px;"></p>
+                </div>
+
+                <div id="blockAudioResult" class="hidden" style="margin-top: 16px; padding: 12px; background: #f0f8ff; border-radius: 4px; border: 1px solid #d0e8ff;">
+                    <p style="font-size: 13px; color: #333; font-weight: 600;">✓ Аудіо згенеровано для всіх блоків</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Combine Audio Files -->
+        <div class="step-container hidden" id="combineAudioSection">
+            <div class="step-header" onclick="toggleStep('combineAudioSection')">
+                <h2><span class="step-number">5</span> Об'єднати аудіо в аудіокнигу</h2>
+                <span class="step-toggle">▼</span>
+            </div>
+            <div class="step-content">
+            <p class="document-info" id="step5Message">Спочатку згенеруйте аудіо для блоків (Крок 4).</p>
+            <p style="color: #999; font-size: 13px; margin-top: 10px; line-height: 1.5;">
+                Всі аудіо блоки будуть об'єднані в один фінальний файл аудіокниги з метаданими.
+            </p>
+
+            <!-- Metadata Section -->
+            <div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 4px; border: 1px solid #e0e0e0;">
+                <h4 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px;">📝 Метадані аудіокниги</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label for="metadataTitle">Назва</label>
+                        <input type="text" id="metadataTitle" class="form-control" placeholder="Назва аудіокниги">
+                    </div>
+                    <div class="form-group">
+                        <label for="metadataArtist">Автор</label>
+                        <input type="text" id="metadataArtist" class="form-control" placeholder="Ім'я автора">
+                    </div>
+                    <div class="form-group">
+                        <label for="metadataAlbum">Альбом</label>
+                        <input type="text" id="metadataAlbum" class="form-control" placeholder="Назва альбому">
+                    </div>
+                    <div class="form-group">
+                        <label for="metadataDate">Рік</label>
+                        <input type="text" id="metadataDate" class="form-control" placeholder="2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="metadataGenre">Жанр</label>
+                        <input type="text" id="metadataGenre" class="form-control" placeholder="Жанр">
+                    </div>
+                    <div class="form-group">
+                        <label for="metadataComment">Коментар</label>
+                        <input type="text" id="metadataComment" class="form-control" placeholder="Версія, примітки">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-success" id="combineAudioBtn" style="margin-top: 16px;">Об'єднати аудіо</button>
+
+            <!-- Audio combination progress -->
+            <div id="combineAudioProgress" class="hidden" style="margin-top: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="font-size: 13px; color: #666;">Об'єднання аудіо...</span>
+                    <span id="combineAudioProgressText" style="font-size: 13px; font-weight: 600; color: #333;">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="combineAudioProgressFill" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <p id="combineAudioProgressStatus" style="font-size: 12px; color: #999; margin-top: 6px;"></p>
+            </div>
+
+            <div id="audioResult" class="hidden audio-section">
+                <h4>Аудіокнига готова</h4>
+                <audio id="audiobookPlayer" controls></audio>
+                <div style="margin-top: 12px;">
+                    <a id="downloadAudioLink" class="download-link" download>Завантажити аудіо</a>
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -446,14 +844,70 @@
         const createDocBtn = document.getElementById('createDocBtn');
         const status = document.getElementById('status');
         const addPagesSection = document.getElementById('addPagesSection');
-        const generateAudioSection = document.getElementById('generateAudioSection');
+        const generateTextSection = document.getElementById('generateTextSection');
+        const generateTextBlocksSection = document.getElementById('generateTextBlocksSection');
+        const combineAudioSection = document.getElementById('combineAudioSection');
         const pageImageInput = document.getElementById('pageImageInput');
+        const selectPageImageBtn = document.getElementById('selectPageImageBtn');
         const processPageBtn = document.getElementById('processPageBtn');
-        const generateAudioBtn = document.getElementById('generateAudioBtn');
-        const saveOcrLanguagesBtn = document.getElementById('saveOcrLanguagesBtn');
+        const generateTextBtn = document.getElementById('generateTextBtn');
+        const generateTextBlocksBtn = document.getElementById('generateTextBlocksBtn');
+        const generateBlockAudioBtn = document.getElementById('generateBlockAudioBtn');
+        const combineAudioBtn = document.getElementById('combineAudioBtn');
         const progressFill = document.getElementById('progressFill');
         const pagesList = document.getElementById('pagesList');
         const currentDocInfo = document.getElementById('currentDocInfo');
+
+        // Modal elements
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmModalTitle = document.getElementById('confirmModalTitle');
+        const confirmModalMessage = document.getElementById('confirmModalMessage');
+        const confirmModalOk = document.getElementById('confirmModalOk');
+        const confirmModalCancel = document.getElementById('confirmModalCancel');
+
+        // Custom confirm dialog
+        function showConfirm(message, title = 'Підтвердження', okButtonClass = 'modal-btn-primary') {
+            return new Promise((resolve) => {
+                confirmModalTitle.textContent = title;
+                confirmModalMessage.textContent = message;
+                confirmModal.classList.add('show');
+
+                // Update OK button style
+                confirmModalOk.className = 'modal-btn ' + okButtonClass;
+
+                const handleOk = () => {
+                    confirmModal.classList.remove('show');
+                    confirmModalOk.removeEventListener('click', handleOk);
+                    confirmModalCancel.removeEventListener('click', handleCancel);
+                    confirmModal.removeEventListener('click', handleOverlayClick);
+                    resolve(true);
+                };
+
+                const handleCancel = () => {
+                    confirmModal.classList.remove('show');
+                    confirmModalOk.removeEventListener('click', handleOk);
+                    confirmModalCancel.removeEventListener('click', handleCancel);
+                    confirmModal.removeEventListener('click', handleOverlayClick);
+                    resolve(false);
+                };
+
+                const handleOverlayClick = (e) => {
+                    if (e.target === confirmModal) {
+                        handleCancel();
+                    }
+                };
+
+                confirmModalOk.addEventListener('click', handleOk);
+                confirmModalCancel.addEventListener('click', handleCancel);
+                confirmModal.addEventListener('click', handleOverlayClick);
+            });
+        }
+
+        // Toggle step expand/collapse
+        function toggleStep(stepId) {
+            const step = document.getElementById(stepId);
+            step.classList.toggle('expanded');
+        }
 
         // Check if editing existing document from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -468,38 +922,6 @@
         // Show/hide voice selector
         docTtsProvider.addEventListener('change', () => {
             voiceGroup.classList.toggle('hidden', docTtsProvider.value !== 'gemini');
-        });
-
-        // Save OCR languages
-        saveOcrLanguagesBtn.addEventListener('click', async () => {
-            try {
-                // Collect selected OCR languages
-                const ocrLanguageCheckboxes = document.querySelectorAll('input[name="step2_ocr_language"]:checked');
-                const selectedOcrLanguages = Array.from(ocrLanguageCheckboxes).map(cb => cb.value);
-
-                if (selectedOcrLanguages.length === 0) {
-                    showStatus('error', 'Виберіть хоча б одну мову для OCR');
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('ocr_languages', selectedOcrLanguages.join(','));
-
-                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/update/`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showStatus('success', 'Налаштування мов OCR збережено!');
-                } else {
-                    showStatus('error', data.error || 'Помилка збереження');
-                }
-            } catch (error) {
-                showStatus('error', 'Помилка: ' + error.message);
-            }
         });
 
         // Load existing document
@@ -538,10 +960,8 @@
                     // Show Step 2 as well
                     addPagesSection.classList.remove('hidden');
 
-                    // Show Step 3 if document is complete
-                    if (doc.is_complete) {
-                        generateAudioSection.classList.remove('hidden');
-                    }
+                    // Always show Step 3 (text generation) when document exists
+                    generateTextSection.classList.remove('hidden');
 
                     // Populate document info
                     currentDocInfo.innerHTML = `
@@ -625,7 +1045,6 @@
                     showStatus('success', message);
 
                     if (!isUpdate) {
-                        document.getElementById('createDocSection').classList.add('hidden');
                         addPagesSection.classList.remove('hidden');
                         currentDocInfo.innerHTML = `
                             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
@@ -651,9 +1070,19 @@
             }
         });
 
+        // Button to trigger file input
+        selectPageImageBtn.addEventListener('click', () => {
+            pageImageInput.click();
+        });
+
         // Handle page selection
         pageImageInput.addEventListener('change', () => {
             processPageBtn.disabled = !pageImageInput.files[0];
+            if (pageImageInput.files[0]) {
+                selectPageImageBtn.textContent = `📄 ${pageImageInput.files[0].name}`;
+            } else {
+                selectPageImageBtn.textContent = '📄 Вибрати зображення сторінки';
+            }
         });
 
         // Add and process page
@@ -692,6 +1121,7 @@
                 if (processData.success) {
                     showStatus('success', `Сторінка ${processData.page_number} оброблена!`);
                     pageImageInput.value = '';
+                    selectPageImageBtn.textContent = '📄 Вибрати зображення сторінки';
                     processPageBtn.disabled = true;
                     await loadPages();
                 } else {
@@ -715,12 +1145,6 @@
                     const progress = doc.total_pages > 0 ? (doc.processed_pages / doc.total_pages * 100) : 0;
                     progressFill.style.width = progress + '%';
                     progressFill.textContent = `${doc.processed_pages}/${doc.total_pages}`;
-
-                    // Set OCR language checkboxes
-                    const ocrLanguages = doc.ocr_languages ? doc.ocr_languages.split(',').map(l => l.trim()) : ['uk'];
-                    document.getElementById('step2_ocr_uk').checked = ocrLanguages.includes('uk');
-                    document.getElementById('step2_ocr_en').checked = ocrLanguages.includes('en');
-                    document.getElementById('step2_ocr_ru').checked = ocrLanguages.includes('ru');
 
                     // Load page list
                     const pagesResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/pages/`);
@@ -751,6 +1175,7 @@
                                         <textarea class="text-edit-area" data-page-id="${page.id}" placeholder="Текст буде з'явитися після обробки...">${page.text || ''}</textarea>
                                         <div class="page-actions">
                                             <button class="btn btn-primary save-text-btn" data-page-id="${page.id}">💾 Зберегти текст</button>
+                                            <button class="btn btn-secondary retranscribe-page-btn" data-page-id="${page.id}" style="background: #007bff; color: white;">🔄 Перетранскрибувати</button>
                                             <button class="btn btn-secondary delete-page-btn" data-page-id="${page.id}" style="background: #dc3545; color: white;">🗑️ Видалити</button>
                                         </div>
                                     </div>
@@ -773,8 +1198,33 @@
                             if (!isVisible) {
                                 details.classList.add('visible');
                                 pageItem.classList.add('expanded');
+
+                                // Resize textarea when page is expanded
+                                const textarea = pageItem.querySelector('.text-edit-area');
+                                if (textarea) {
+                                    setTimeout(() => {
+                                        textarea.style.height = 'auto';
+                                        textarea.style.height = Math.max(100, textarea.scrollHeight) + 'px';
+                                    }, 10);
+                                }
                             }
                         });
+
+                        // Auto-resize textarea based on content
+                        const textarea = pageItem.querySelector('.text-edit-area');
+                        if (textarea) {
+                            // Function to resize textarea
+                            const resizeTextarea = () => {
+                                textarea.style.height = 'auto';
+                                textarea.style.height = Math.max(100, textarea.scrollHeight) + 'px';
+                            };
+
+                            // Resize on input
+                            textarea.addEventListener('input', resizeTextarea);
+
+                            // Initial resize
+                            setTimeout(resizeTextarea, 0);
+                        }
 
                         // Save text button
                         const saveBtn = pageItem.querySelector('.save-text-btn');
@@ -791,12 +1241,24 @@
                             console.error('Save button not found for page');
                         }
 
+                        // Retranscribe page button
+                        const retranscribeBtn = pageItem.querySelector('.retranscribe-page-btn');
+                        if (retranscribeBtn) {
+                            retranscribeBtn.addEventListener('click', async (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const pageId = retranscribeBtn.getAttribute('data-page-id');
+                                await retranscribePage(pageId);
+                            });
+                        }
+
                         // Delete page button
                         const deleteBtn = pageItem.querySelector('.delete-page-btn');
                         deleteBtn.addEventListener('click', async (e) => {
                             e.stopPropagation();
                             const pageId = deleteBtn.getAttribute('data-page-id');
-                            if (confirm('Видалити цю сторінку?')) {
+                            const confirmed = await showConfirm('Видалити цю сторінку?', 'Видалення сторінки', 'modal-btn-danger');
+                            if (confirmed) {
                                 await deletePage(pageId);
                             }
                         });
@@ -821,11 +1283,69 @@
                         pagesList.appendChild(pageItem);
                     });
 
-                    // Show/hide audio generation based on completion status
+                    // Always show Step 3 (text generation) when document exists
+                    generateTextSection.classList.remove('hidden');
+
+                    // Update Step 3 message based on completion status
+                    const step3Message = document.getElementById('step3Message');
                     if (doc.is_complete) {
-                        generateAudioSection.classList.remove('hidden');
+                        step3Message.textContent = 'Всі сторінки оброблені! Можна згенерувати фінальний текст.';
+                        step3Message.style.color = '#28a745';
+                        generateTextBtn.disabled = false;
+                    } else if (doc.total_pages === 0) {
+                        step3Message.textContent = 'Завантажте сторінки для створення фінального тексту.';
+                        step3Message.style.color = '#666';
+                        generateTextBtn.disabled = true;
                     } else {
-                        generateAudioSection.classList.add('hidden');
+                        step3Message.textContent = `Оброблено ${doc.processed_pages} з ${doc.total_pages} сторінок. Завершіть обробку всіх сторінок для генерації тексту.`;
+                        step3Message.style.color = '#ff9800';
+                        generateTextBtn.disabled = true;
+                    }
+
+                    // Show Step 4 (text blocks) if final text exists
+                    const step4Message = document.getElementById('step4Message');
+                    if (doc.final_text) {
+                        generateTextBlocksSection.classList.remove('hidden');
+                        step4Message.textContent = 'Фінальний текст готовий! Можна розділити на блоки.';
+                        step4Message.style.color = '#28a745';
+                        generateTextBlocksBtn.disabled = false;
+
+                        // Show text result section in Step 3
+                        document.getElementById('textResult').classList.remove('hidden');
+                        if (doc.combined_text_file) {
+                            document.getElementById('downloadTextLink').href = doc.combined_text_file;
+                        }
+
+                        // Populate text preview with final_text
+                        const textPreview = document.getElementById('textPreview');
+                        textPreview.textContent = doc.final_text;
+
+                        // Setup view text button toggle
+                        const viewTextBtn = document.getElementById('viewTextBtn');
+                        viewTextBtn.onclick = () => {
+                            if (textPreview.classList.contains('hidden')) {
+                                textPreview.classList.remove('hidden');
+                                viewTextBtn.textContent = '🙈 Приховати текст';
+                            } else {
+                                textPreview.classList.add('hidden');
+                                viewTextBtn.textContent = '👁️ Переглянути текст';
+                            }
+                        };
+
+                        // Check if text blocks already exist and load them
+                        checkAndLoadTextBlocks();
+
+                        // Show Step 5 if audio was generated
+                        if (doc.audio_generated && doc.combined_audio_file) {
+                            combineAudioSection.classList.remove('hidden');
+                            document.getElementById('audioResult').classList.remove('hidden');
+                            document.getElementById('audiobookPlayer').src = doc.combined_audio_file;
+                            document.getElementById('downloadAudioLink').href = doc.combined_audio_file;
+                        }
+                    } else {
+                        step4Message.textContent = 'Спочатку згенеруйте фінальний текст (Крок 3).';
+                        step4Message.style.color = '#666';
+                        generateTextBlocksBtn.disabled = true;
                     }
                 }
             } catch (error) {
@@ -833,32 +1353,472 @@
             }
         }
 
-        // Generate audiobook
-        generateAudioBtn.addEventListener('click', async () => {
-            generateAudioBtn.disabled = true;
-            showStatus('info', 'Генерація аудіокниги... Це може зайняти деякий час.');
+        // Generate combined text
+        generateTextBtn.addEventListener('click', async () => {
+            generateTextBtn.disabled = true;
+            showStatus('info', 'Генерація фінального тексту...');
 
             try {
-                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/generate-audio/`, {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/generate-text/`, {
                     method: 'POST'
                 });
                 const data = await response.json();
 
                 if (data.success) {
-                    showStatus('success', 'Аудіокнига згенерована!');
-                    document.getElementById('audiobookPlayer').src = data.combined_audio_url;
+                    showStatus('success', 'Фінальний текст згенеровано!');
                     document.getElementById('downloadTextLink').href = data.combined_text_url;
-                    document.getElementById('downloadAudioLink').href = data.combined_audio_url;
-                    document.getElementById('audioResult').classList.remove('hidden');
+                    document.getElementById('textResult').classList.remove('hidden');
+
+                    // Setup text preview toggle with onclick (not addEventListener to avoid duplicates)
+                    const viewTextBtn = document.getElementById('viewTextBtn');
+                    const textPreview = document.getElementById('textPreview');
+                    textPreview.textContent = data.combined_text_content;
+
+                    viewTextBtn.onclick = () => {
+                        if (textPreview.classList.contains('hidden')) {
+                            textPreview.classList.remove('hidden');
+                            viewTextBtn.textContent = '🙈 Приховати текст';
+                        } else {
+                            textPreview.classList.add('hidden');
+                            viewTextBtn.textContent = '👁️ Переглянути текст';
+                        }
+                    };
+
+                    // Show Step 4 and reload document to update state
+                    await loadPages();
                 } else {
                     showStatus('error', data.error);
                 }
             } catch (error) {
                 showStatus('error', 'Помилка: ' + error.message);
             } finally {
-                generateAudioBtn.disabled = false;
+                generateTextBtn.disabled = false;
             }
         });
+
+        // Step 4a: Generate text blocks
+        generateTextBlocksBtn.addEventListener('click', async () => {
+            generateTextBlocksBtn.disabled = true;
+
+            const textBlocksProgress = document.getElementById('textBlocksProgress');
+            const textBlocksProgressFill = document.getElementById('textBlocksProgressFill');
+            const textBlocksProgressText = document.getElementById('textBlocksProgressText');
+            const textBlocksProgressStatus = document.getElementById('textBlocksProgressStatus');
+
+            textBlocksProgress.classList.remove('hidden');
+            textBlocksProgressFill.style.width = '0%';
+            textBlocksProgressText.textContent = '0%';
+
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/generate-text-blocks/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (!data.success) {
+                    textBlocksProgress.classList.add('hidden');
+                    showStatus('error', data.error);
+                    generateTextBlocksBtn.disabled = false;
+                    return;
+                }
+
+                // Poll for progress
+                const progressInterval = setInterval(async () => {
+                    try {
+                        const progressResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/text-block-progress/`);
+                        const progressData = await progressResponse.json();
+
+                        if (progressData.success && progressData.progress) {
+                            const prog = progressData.progress;
+                            textBlocksProgressFill.style.width = prog.progress + '%';
+                            textBlocksProgressText.textContent = prog.progress + '%';
+                            textBlocksProgressStatus.textContent = prog.message;
+
+                            if (prog.status === 'completed') {
+                                clearInterval(progressInterval);
+                                setTimeout(async () => {
+                                    textBlocksProgress.classList.add('hidden');
+                                    document.getElementById('textBlocksResult').classList.remove('hidden');
+                                    document.getElementById('blockAudioSection').classList.remove('hidden');
+                                    showStatus('success', 'Текст розділений на блоки!');
+                                    generateTextBlocksBtn.disabled = false;
+
+                                    // Load and display text blocks
+                                    await loadTextBlocks();
+                                }, 1000);
+                            } else if (prog.status === 'error') {
+                                clearInterval(progressInterval);
+                                textBlocksProgress.classList.add('hidden');
+                                showStatus('error', prog.message);
+                                generateTextBlocksBtn.disabled = false;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error polling progress:', error);
+                    }
+                }, 500);
+
+            } catch (error) {
+                textBlocksProgress.classList.add('hidden');
+                showStatus('error', 'Помилка: ' + error.message);
+                generateTextBlocksBtn.disabled = false;
+            }
+        });
+
+        // Step 4b: Generate block audio
+        generateBlockAudioBtn.addEventListener('click', async () => {
+            generateBlockAudioBtn.disabled = true;
+
+            const blockAudioProgress = document.getElementById('blockAudioProgress');
+            const blockAudioProgressFill = document.getElementById('blockAudioProgressFill');
+            const blockAudioProgressText = document.getElementById('blockAudioProgressText');
+            const blockAudioProgressStatus = document.getElementById('blockAudioProgressStatus');
+
+            blockAudioProgress.classList.remove('hidden');
+            blockAudioProgressFill.style.width = '0%';
+            blockAudioProgressText.textContent = '0%';
+
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/generate-block-audio/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (!data.success) {
+                    blockAudioProgress.classList.add('hidden');
+                    showStatus('error', data.error);
+                    generateBlockAudioBtn.disabled = false;
+                    return;
+                }
+
+                // Poll for progress
+                const progressInterval = setInterval(async () => {
+                    try {
+                        const progressResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/block-audio-progress/`);
+                        const progressData = await progressResponse.json();
+
+                        if (progressData.success && progressData.progress) {
+                            const prog = progressData.progress;
+                            blockAudioProgressFill.style.width = prog.progress + '%';
+                            blockAudioProgressText.textContent = prog.progress + '%';
+                            blockAudioProgressStatus.textContent = prog.message;
+
+                            if (prog.status === 'completed') {
+                                clearInterval(progressInterval);
+                                setTimeout(async () => {
+                                    blockAudioProgress.classList.add('hidden');
+                                    document.getElementById('blockAudioResult').classList.remove('hidden');
+                                    combineAudioSection.classList.remove('hidden');
+                                    showStatus('success', 'Аудіо згенеровано для всіх блоків!');
+                                    generateBlockAudioBtn.disabled = false;
+
+                                    // Reload blocks to show updated audio status
+                                    await loadTextBlocks();
+                                }, 1000);
+                            } else if (prog.status === 'error') {
+                                clearInterval(progressInterval);
+                                blockAudioProgress.classList.add('hidden');
+                                showStatus('error', prog.message);
+                                generateBlockAudioBtn.disabled = false;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error polling progress:', error);
+                    }
+                }, 500);
+
+            } catch (error) {
+                blockAudioProgress.classList.add('hidden');
+                showStatus('error', 'Помилка: ' + error.message);
+                generateBlockAudioBtn.disabled = false;
+            }
+        });
+
+        // Step 5: Combine audio files
+        combineAudioBtn.addEventListener('click', async () => {
+            combineAudioBtn.disabled = true;
+
+            const combineAudioProgress = document.getElementById('combineAudioProgress');
+            const combineAudioProgressFill = document.getElementById('combineAudioProgressFill');
+            const combineAudioProgressText = document.getElementById('combineAudioProgressText');
+            const combineAudioProgressStatus = document.getElementById('combineAudioProgressStatus');
+
+            combineAudioProgress.classList.remove('hidden');
+            combineAudioProgressFill.style.width = '0%';
+            combineAudioProgressText.textContent = '0%';
+
+            // Collect metadata
+            const metadata = {
+                title: document.getElementById('metadataTitle').value,
+                artist: document.getElementById('metadataArtist').value,
+                album: document.getElementById('metadataAlbum').value,
+                date: document.getElementById('metadataDate').value,
+                genre: document.getElementById('metadataGenre').value,
+                comment: document.getElementById('metadataComment').value
+            };
+
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/generate-audio/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ metadata: metadata })
+                });
+                const data = await response.json();
+
+                if (!data.success) {
+                    combineAudioProgress.classList.add('hidden');
+                    showStatus('error', data.error);
+                    combineAudioBtn.disabled = false;
+                    return;
+                }
+
+                // Poll for progress
+                const progressInterval = setInterval(async () => {
+                    try {
+                        const progressResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/audio-progress/`);
+                        const progressData = await progressResponse.json();
+
+                        if (progressData.success && progressData.progress) {
+                            const prog = progressData.progress;
+                            combineAudioProgressFill.style.width = prog.progress + '%';
+                            combineAudioProgressText.textContent = prog.progress + '%';
+                            combineAudioProgressStatus.textContent = prog.message;
+
+                            if (prog.status === 'completed') {
+                                clearInterval(progressInterval);
+
+                                // Fetch final document data
+                                const docResponse = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/`);
+                                const docData = await docResponse.json();
+
+                                if (docData.success) {
+                                    setTimeout(() => {
+                                        combineAudioProgress.classList.add('hidden');
+                                        showStatus('success', 'Аудіокнига згенерована!');
+                                        document.getElementById('audiobookPlayer').src = docData.document.combined_audio_file;
+                                        document.getElementById('downloadAudioLink').href = docData.document.combined_audio_file;
+                                        document.getElementById('audioResult').classList.remove('hidden');
+                                        combineAudioBtn.disabled = false;
+                                    }, 1000);
+                                }
+                            } else if (prog.status === 'error') {
+                                clearInterval(progressInterval);
+                                combineAudioProgress.classList.add('hidden');
+                                showStatus('error', prog.message);
+                                combineAudioBtn.disabled = false;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error polling progress:', error);
+                    }
+                }, 500);
+
+            } catch (error) {
+                combineAudioProgress.classList.add('hidden');
+                showStatus('error', 'Помилка: ' + error.message);
+                combineAudioBtn.disabled = false;
+            }
+        });
+
+        // Check if text blocks exist and load them if they do
+        async function checkAndLoadTextBlocks() {
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/text-blocks/`);
+                const data = await response.json();
+
+                if (data.success && data.blocks && data.blocks.length > 0) {
+                    // Text blocks already exist - show them
+                    document.getElementById('textBlocksResult').classList.remove('hidden');
+                    document.getElementById('blockAudioSection').classList.remove('hidden');
+                    await loadTextBlocks();
+
+                    // Check if all blocks have audio
+                    const allHaveAudio = data.blocks.every(block => block.has_audio);
+                    if (allHaveAudio) {
+                        document.getElementById('blockAudioResult').classList.remove('hidden');
+                        combineAudioSection.classList.remove('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking text blocks:', error);
+            }
+        }
+
+        // Load and display text blocks
+        async function loadTextBlocks() {
+            try {
+                const response = await fetch(`/ocr_tts/api/documents/${currentDocumentId}/text-blocks/`);
+                const data = await response.json();
+
+                if (data.success && data.blocks) {
+                    const blocksContainer = document.getElementById('blocksContainer');
+                    const textBlocksList = document.getElementById('textBlocksList');
+
+                    blocksContainer.innerHTML = '';
+
+                    data.blocks.forEach(block => {
+                        const blockItem = document.createElement('div');
+                        blockItem.className = 'block-item' + (block.has_audio ? ' has-audio' : '');
+                        blockItem.id = `block-${block.id}`;
+
+                        const durationText = block.duration_ms ? ` (${Math.round(block.duration_ms / 1000)}s)` : '';
+                        const isLongText = block.text_length > 200;
+
+                        // Escape HTML but preserve newlines
+                        const escapedText = block.text_content
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#039;');
+
+                        blockItem.innerHTML = `
+                            <div class="block-number">Блок ${block.block_number}</div>
+                            <div class="block-content">
+                                <div class="block-text ${isLongText ? 'collapsed' : ''}" id="block-text-${block.id}">${escapedText}</div>
+                                ${isLongText ? `
+                                    <span class="toggle-text-btn" data-block-id="${block.id}">
+                                        Показати більше ▼
+                                    </span>
+                                ` : ''}
+                                <div style="margin-top: 6px; font-size: 11px; color: #999;">
+                                    ${block.text_length} символів
+                                </div>
+                            </div>
+                            <div class="block-actions">
+                                ${block.has_audio ? `
+                                    <span class="block-status completed">✓ Аудіо готове${durationText}</span>
+                                    <button class="btn-small btn-secondary regenerate-block-audio-btn" data-block-id="${block.id}">
+                                        Перегенерувати
+                                    </button>
+                                    <audio controls style="width: 200px; height: 32px;" src="${block.audio_url}"></audio>
+                                ` : `
+                                    <span class="block-status" id="block-status-${block.id}">Без аудіо</span>
+                                    <button class="btn-small btn-primary generate-block-audio-btn" data-block-id="${block.id}">
+                                        Згенерувати аудіо
+                                    </button>
+                                `}
+                            </div>
+                        `;
+
+                        blocksContainer.appendChild(blockItem);
+                    });
+
+                    // Attach event listeners to toggle text buttons
+                    document.querySelectorAll('.toggle-text-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const blockId = e.target.getAttribute('data-block-id');
+                            const textDiv = document.getElementById(`block-text-${blockId}`);
+                            const isCollapsed = textDiv.classList.contains('collapsed');
+
+                            if (isCollapsed) {
+                                textDiv.classList.remove('collapsed');
+                                e.target.innerHTML = 'Показати менше ▲';
+                            } else {
+                                textDiv.classList.add('collapsed');
+                                e.target.innerHTML = 'Показати більше ▼';
+                            }
+                        });
+                    });
+
+                    // Attach event listeners to generate buttons
+                    document.querySelectorAll('.generate-block-audio-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const blockId = e.target.getAttribute('data-block-id');
+                            await generateSingleBlockAudio(blockId);
+                        });
+                    });
+
+                    // Attach event listeners to regenerate buttons
+                    document.querySelectorAll('.regenerate-block-audio-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const blockId = e.target.getAttribute('data-block-id');
+                            await regenerateSingleBlockAudio(blockId);
+                        });
+                    });
+
+                    textBlocksList.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading text blocks:', error);
+                showStatus('error', 'Помилка завантаження блоків');
+            }
+        }
+
+        // Generate audio for a single block
+        async function generateSingleBlockAudio(blockId) {
+            const btn = document.querySelector(`button[data-block-id="${blockId}"].generate-block-audio-btn`);
+            const statusSpan = document.getElementById(`block-status-${blockId}`);
+
+            btn.disabled = true;
+            statusSpan.textContent = 'Генерація...';
+            statusSpan.className = 'block-status generating';
+
+            try {
+                const response = await fetch(`/ocr_tts/api/blocks/${blockId}/generate-audio/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Аудіо згенеровано для блоку!');
+                    await loadTextBlocks(); // Reload to show the audio player
+                } else {
+                    showStatus('error', data.error || 'Помилка генерації аудіо');
+                    statusSpan.textContent = 'Помилка';
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+                statusSpan.textContent = 'Помилка';
+                btn.disabled = false;
+            }
+        }
+
+        // Regenerate audio for a single block
+        async function regenerateSingleBlockAudio(blockId) {
+            const btn = document.querySelector(`button[data-block-id="${blockId}"].regenerate-block-audio-btn`);
+            const blockItem = document.getElementById(`block-${blockId}`);
+            const blockActions = blockItem.querySelector('.block-actions');
+
+            // Hide the status text and audio player during regeneration
+            const statusSpan = blockActions.querySelector('.block-status');
+            const audioPlayer = blockActions.querySelector('audio');
+
+            if (statusSpan) statusSpan.style.display = 'none';
+            if (audioPlayer) audioPlayer.style.display = 'none';
+
+            btn.disabled = true;
+            btn.textContent = 'Генерація...';
+
+            try {
+                const response = await fetch(`/ocr_tts/api/blocks/${blockId}/regenerate-audio/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Аудіо перегенеровано для блоку!');
+                    await loadTextBlocks(); // Reload to show the updated audio
+                } else {
+                    showStatus('error', data.error || 'Помилка регенерації аудіо');
+                    btn.disabled = false;
+                    btn.textContent = 'Перегенерувати';
+                    // Show them back on error
+                    if (statusSpan) statusSpan.style.display = '';
+                    if (audioPlayer) audioPlayer.style.display = '';
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Перегенерувати';
+                // Show them back on error
+                if (statusSpan) statusSpan.style.display = '';
+                if (audioPlayer) audioPlayer.style.display = '';
+            }
+        }
 
         // Save page text
         async function savePageText(pageId, text) {
@@ -925,15 +1885,76 @@
                     const textarea = document.querySelector(`.text-edit-area[data-page-id="${pageId}"]`);
                     if (textarea) {
                         textarea.value = data.text || '';
+
+                        // Trigger auto-resize
+                        textarea.style.height = 'auto';
+                        textarea.style.height = Math.max(100, textarea.scrollHeight) + 'px';
                     }
 
-                    // Reload pages to update status
-                    await loadPages();
+                    // Update status badge without reloading
+                    const pageItem = document.querySelector(`.page-item[data-page-id="${pageId}"]`);
+                    if (pageItem) {
+                        const statusBadge = pageItem.querySelector('.page-status');
+                        if (statusBadge) {
+                            statusBadge.className = 'page-status done';
+                            statusBadge.textContent = '✓ Оброблено';
+                        }
+                        pageItem.classList.add('processed');
+                    }
                 } else {
                     showStatus('error', data.error || 'Невідома помилка');
                 }
             } catch (error) {
                 console.error('Error in updatePageImage:', error);
+                showStatus('error', 'Помилка: ' + error.message);
+            }
+        }
+
+        // Retranscribe page (re-run OCR)
+        async function retranscribePage(pageId) {
+            const confirmed = await showConfirm(
+                'Перетранскрибувати цю сторінку? Поточний текст буде замінено новим OCR результатом.',
+                'Перетранскрибація'
+            );
+            if (!confirmed) {
+                return;
+            }
+
+            showStatus('info', 'Перетранскрибація сторінки...');
+
+            try {
+                const response = await fetch(`/ocr_tts/api/pages/${pageId}/retranscribe/`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Сторінку перетранскрибовано!');
+
+                    // Update the textarea with new text
+                    const textarea = document.querySelector(`.text-edit-area[data-page-id="${pageId}"]`);
+                    if (textarea) {
+                        textarea.value = data.text || '';
+
+                        // Trigger auto-resize
+                        textarea.style.height = 'auto';
+                        textarea.style.height = Math.max(100, textarea.scrollHeight) + 'px';
+                    }
+
+                    // Don't reload page - just update status badge
+                    const pageItem = document.querySelector(`.page-item[data-page-id="${pageId}"]`);
+                    if (pageItem) {
+                        const statusBadge = pageItem.querySelector('.page-status');
+                        if (statusBadge) {
+                            statusBadge.className = 'page-status done';
+                            statusBadge.textContent = '✓ Оброблено';
+                        }
+                        pageItem.classList.add('processed');
+                    }
+                } else {
+                    showStatus('error', data.error || 'Помилка перетранскрибації');
+                }
+            } catch (error) {
                 showStatus('error', 'Помилка: ' + error.message);
             }
         }
@@ -959,10 +1980,23 @@
             }
         }
 
+        let statusTimeout = null;
+
         function showStatus(type, message) {
             status.className = 'status ' + type;
             status.textContent = message;
             status.style.display = 'block';
+
+            // Clear existing timeout
+            if (statusTimeout) {
+                clearTimeout(statusTimeout);
+            }
+
+            // Auto-hide after delay (info messages stay longer)
+            const delay = type === 'info' ? 10000 : 5000; // 10s for info, 5s for others
+            statusTimeout = setTimeout(() => {
+                status.style.display = 'none';
+            }, delay);
         }
     </script>
 </body>

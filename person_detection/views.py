@@ -13,7 +13,6 @@ from PIL import Image
 from pydantic import ValidationError
 
 from ml.config import TrainingConfig
-from ml.training.person_pipeline import PersonClassificationPipeline
 
 from .services.detection import PersonDetectionService
 
@@ -29,10 +28,14 @@ class PersonDetectView(View):
     """Accept image uploads and return person detection results."""
 
     service_class = PersonDetectionService
+    _detector = None
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.detector = self.service_class()
+    @property
+    def detector(self):
+        """Lazy-load the detector only when needed."""
+        if self._detector is None:
+            self.__class__._detector = self.service_class()
+        return self._detector
 
     def post(self, request, *args, **kwargs):
         """Handle image upload via multipart/form-data."""
@@ -66,7 +69,6 @@ class PersonDetectView(View):
 class TrainPersonDetectionView(View):
     """Train the person detection model and save checkpoint."""
 
-    pipeline_class = PersonClassificationPipeline
     config_class = TrainingConfig
 
     def post(self, request, *args, **kwargs):
@@ -87,7 +89,9 @@ class TrainPersonDetectionView(View):
                 status=422,
             )
 
-        pipeline = self.pipeline_class(config)
+        # Lazy import to avoid loading heavy dependencies at module import time
+        from ml.training.person_pipeline import PersonClassificationPipeline
+        pipeline = PersonClassificationPipeline(config)
 
         # Add device info to response
         import torch

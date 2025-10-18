@@ -16,3 +16,6 @@ torchvision
 google-genai
 pytesseract
 gTTS
+pydub
+opencv-python
+mutagen

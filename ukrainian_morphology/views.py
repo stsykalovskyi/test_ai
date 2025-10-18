@@ -41,10 +41,14 @@ class InflectView(View):
     """Accepts JSON payloads describing the desired inflection."""
 
     service_class = MorphologicalInflector
+    _inflector = None
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.inflector = self.service_class()
+    @property
+    def inflector(self):
+        """Lazy-load the inflector only when needed."""
+        if self._inflector is None:
+            self.__class__._inflector = self.service_class()
+        return self._inflector
 
     def post(self, request, *args, **kwargs):
         try:

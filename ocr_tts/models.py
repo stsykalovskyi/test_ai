@@ -1,4 +1,5 @@
 from django.db import models
+import re
 
 
 class Document(models.Model):
@@ -13,6 +14,7 @@ class Document(models.Model):
         default='gtts'
     )
     tts_voice = models.CharField(max_length=50, default='Zephyr', blank=True)
+    final_text = models.TextField(blank=True, help_text='Combined text with smart sentence merging and page dividers')
     combined_text_file = models.FileField(upload_to='documents/texts/', blank=True, null=True)
     combined_audio_file = models.FileField(upload_to='documents/audio/', blank=True, null=True)
     audio_generated = models.BooleanField(default=False)
@@ -45,6 +47,7 @@ class Document(models.Model):
         Get all page texts combined with intelligent sentence merging.
 
         Logic:
+        - Remove hyphenation breaks (-\n) from OCR text
         - Find text after last sentence (ending with ., !, ?) on current page
         - Move incomplete sentence to start of next page
         - Add page dividers (===PAGE_X===) to mark text blocks
@@ -69,7 +72,31 @@ class Document(models.Model):
             # Add carried over text from previous page
             if carry_over:
                 text = carry_over + ' ' + text
-                carry_over = ''
+
+            # Clean up OCR artifacts and formatting for better TTS
+            # 1. Remove hyphenation breaks ONLY (word split across lines with hyphen at end)
+            # This preserves hyphens in compound words and at end of sentences
+            # Remove both hyphen and newline
+            text = re.sub(r'([а-яіїєґa-z])-\s*\r?\n\s*([а-яіїєґa-z])', r'\1\2', text, flags=re.IGNORECASE)
+
+            # 2. Normalize line breaks - convert Windows line endings to Unix
+            text = re.sub(r'\r\n', '\n', text)
+
+            # 3. Remove multiple consecutive newlines first (keep max 2 for paragraph breaks)
+            text = re.sub(r'\n{3,}', '\n\n', text)
+
+            # 4. Replace single newlines with space, but preserve double newlines (paragraphs)
+            text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
+
+            # 5. Remove multiple spaces on the same line
+            text = re.sub(r'[ \t]+', ' ', text)
+
+            # 6. Replace incorrect Ukrainian characters
+            text = text.replace(" i ", " і ")
+            text = text.replace(" ї ", " і ")
+            text = text.replace("I ", "І ")
+
+            text = text.strip()
 
             # Find last sentence-ending punctuation
             last_period = max(text.rfind('.'), text.rfind('!'), text.rfind('?'))
@@ -190,3 +217,44 @@ class AudioFile(models.Model):
 
     def __str__(self):
         return f"Audio from Text {self.extracted_text.id}"
+
+
+class TextBlock(models.Model):
+    """Model for storing individual text blocks from document"""
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.CASCADE,
+        related_name='text_blocks'
+    )
+    block_number = models.PositiveIntegerField()
+    text_content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['document', 'block_number']
+        unique_together = ['document', 'block_number']
+        verbose_name = 'Text Block'
+        verbose_name_plural = 'Text Blocks'
+
+    def __str__(self):
+        return f"{self.document} - Block {self.block_number}"
+
+
+class BlockAudio(models.Model):
+    """Model for storing audio files for individual text blocks"""
+    text_block = models.OneToOneField(
+        TextBlock,
+        on_delete=models.CASCADE,
+        related_name='audio'
+    )
+    audio_file = models.FileField(upload_to='block_audio/')
+    duration_ms = models.PositiveIntegerField(null=True, blank=True, help_text='Audio duration in milliseconds')
+    generated_at = models.DateTimeField(auto_now_add=True)
+    regenerated_at = models.DateTimeField(null=True, blank=True, help_text='Last regeneration timestamp')
+
+    class Meta:
+        verbose_name = 'Block Audio'
+        verbose_name_plural = 'Block Audios'
+
+    def __str__(self):
+        return f"Audio for {self.text_block}"
