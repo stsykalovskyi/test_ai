@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/documents/<int:document_id>/generate-audio/', views.generate_document_audio, name='generate_document_audio'),
     path('api/documents/<int:document_id>/audio-progress/', views.get_audio_progress, name='get_audio_progress'),
     path('api/blocks/<int:block_id>/generate-audio/', views.generate_single_block_audio, name='generate_single_block_audio'),
+    path('api/blocks/<int:block_id>/update/', views.update_text_block, name='update_text_block'),
     path('api/blocks/<int:block_id>/regenerate-audio/', views.regenerate_block_audio, name='regenerate_block_audio'),
     path('api/pages/<int:page_id>/', views.get_page, name='get_page'),
     path('api/pages/<int:page_id>/process/', views.process_page, name='process_page'),

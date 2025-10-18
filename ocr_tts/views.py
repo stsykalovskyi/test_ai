@@ -767,6 +767,36 @@ def generate_single_block_audio(request, block_id):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+def update_text_block(request, block_id):
+    """Update text content of a specific text block (before audio generation)"""
+    try:
+        from .models import TextBlock
+
+        text_block = TextBlock.objects.get(id=block_id)
+        data = json.loads(request.body.decode('utf-8'))
+
+        new_text = data.get('text_content')
+        if new_text is None:
+            return JsonResponse({'error': 'text_content is required'}, status=400)
+
+        text_block.text_content = new_text
+        text_block.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Text block updated',
+            'block_id': text_block.id,
+            'text_content': text_block.text_content
+        })
+
+    except TextBlock.DoesNotExist:
+        return JsonResponse({'error': 'Text block not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
 def regenerate_block_audio(request, block_id):
     """Regenerate audio for a specific text block"""
     try:
@@ -787,6 +817,8 @@ def regenerate_block_audio(request, block_id):
             'duration_ms': block_audio.duration_ms
         })
 
+    except TextBlock.DoesNotExist:
+        return JsonResponse({'error': 'Text block not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 

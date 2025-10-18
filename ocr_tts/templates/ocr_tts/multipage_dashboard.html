@@ -1678,20 +1678,30 @@
                             <div class="block-number">Блок ${block.block_number}</div>
                             <div class="block-content">
                                 <div class="block-text ${isLongText ? 'collapsed' : ''}" id="block-text-${block.id}">${escapedText}</div>
+                                <textarea class="block-text-editor" id="block-editor-${block.id}" style="display:none; width: 100%; min-height: 120px; padding: 10px; border: 2px solid #007bff; border-radius: 6px; font-family: inherit; font-size: 13px; line-height: 1.5; resize: vertical;">${block.text_content}</textarea>
                                 ${isLongText ? `
-                                    <span class="toggle-text-btn" data-block-id="${block.id}">
+                                    <span class="toggle-text-btn" data-block-id="${block.id}" id="toggle-btn-${block.id}">
                                         Показати більше ▼
                                     </span>
                                 ` : ''}
                                 <div style="margin-top: 6px; font-size: 11px; color: #999;">
-                                    ${block.text_length} символів
+                                    <span id="block-char-count-${block.id}">${block.text_length}</span> символів
                                 </div>
                             </div>
                             <div class="block-actions">
+                                <button class="btn-small btn-secondary edit-block-btn" data-block-id="${block.id}" id="edit-btn-${block.id}">
+                                    ✏️ Редагувати
+                                </button>
+                                <button class="btn-small btn-primary save-block-btn" data-block-id="${block.id}" id="save-btn-${block.id}" style="display:none;">
+                                    💾 Зберегти
+                                </button>
+                                <button class="btn-small btn-secondary cancel-edit-btn" data-block-id="${block.id}" id="cancel-btn-${block.id}" style="display:none;">
+                                    ✖ Скасувати
+                                </button>
                                 ${block.has_audio ? `
                                     <span class="block-status completed">✓ Аудіо готове${durationText}</span>
                                     <button class="btn-small btn-secondary regenerate-block-audio-btn" data-block-id="${block.id}">
-                                        Перегенерувати
+                                        🔄 Перегенерувати
                                     </button>
                                     <audio controls style="width: 200px; height: 32px;" src="${block.audio_url}"></audio>
                                 ` : `
@@ -1728,6 +1738,30 @@
                         btn.addEventListener('click', async (e) => {
                             const blockId = e.target.getAttribute('data-block-id');
                             await generateSingleBlockAudio(blockId);
+                        });
+                    });
+
+                    // Attach event listeners to edit buttons
+                    document.querySelectorAll('.edit-block-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const blockId = e.target.getAttribute('data-block-id');
+                            enterEditMode(blockId);
+                        });
+                    });
+
+                    // Attach event listeners to save buttons
+                    document.querySelectorAll('.save-block-btn').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const blockId = e.target.getAttribute('data-block-id');
+                            await saveBlockText(blockId);
+                        });
+                    });
+
+                    // Attach event listeners to cancel buttons
+                    document.querySelectorAll('.cancel-edit-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const blockId = e.target.getAttribute('data-block-id');
+                            exitEditMode(blockId);
                         });
                     });
 
@@ -1774,6 +1808,119 @@
                 showStatus('error', 'Помилка: ' + error.message);
                 statusSpan.textContent = 'Помилка';
                 btn.disabled = false;
+            }
+        }
+
+        // Enter edit mode for a text block
+        function enterEditMode(blockId) {
+            const textDiv = document.getElementById(`block-text-${blockId}`);
+            const editorTextarea = document.getElementById(`block-editor-${blockId}`);
+            const editBtn = document.getElementById(`edit-btn-${blockId}`);
+            const saveBtn = document.getElementById(`save-btn-${blockId}`);
+            const cancelBtn = document.getElementById(`cancel-btn-${blockId}`);
+            const toggleBtn = document.getElementById(`toggle-btn-${blockId}`);
+
+            // Hide text display, show editor
+            textDiv.style.display = 'none';
+            if (toggleBtn) toggleBtn.style.display = 'none';
+            editorTextarea.style.display = 'block';
+
+            // Store original text for cancel functionality
+            editorTextarea.dataset.originalText = editorTextarea.value;
+
+            // Update buttons
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+
+            // Focus the editor and position cursor at end
+            editorTextarea.focus();
+            editorTextarea.setSelectionRange(editorTextarea.value.length, editorTextarea.value.length);
+        }
+
+        // Exit edit mode without saving
+        function exitEditMode(blockId) {
+            const textDiv = document.getElementById(`block-text-${blockId}`);
+            const editorTextarea = document.getElementById(`block-editor-${blockId}`);
+            const editBtn = document.getElementById(`edit-btn-${blockId}`);
+            const saveBtn = document.getElementById(`save-btn-${blockId}`);
+            const cancelBtn = document.getElementById(`cancel-btn-${blockId}`);
+            const toggleBtn = document.getElementById(`toggle-btn-${blockId}`);
+
+            // Restore original text
+            if (editorTextarea.dataset.originalText) {
+                editorTextarea.value = editorTextarea.dataset.originalText;
+            }
+
+            // Show text display, hide editor
+            textDiv.style.display = 'block';
+            if (toggleBtn) toggleBtn.style.display = 'block';
+            editorTextarea.style.display = 'none';
+
+            // Update buttons
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        }
+
+        // Save updated text block content
+        async function saveBlockText(blockId) {
+            const editorTextarea = document.getElementById(`block-editor-${blockId}`);
+            const saveBtn = document.getElementById(`save-btn-${blockId}`);
+            const newText = editorTextarea.value.trim();
+
+            if (!newText) {
+                showStatus('error', 'Текст не може бути порожнім');
+                return;
+            }
+
+            // Disable save button during request
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Збереження...';
+
+            try {
+                const response = await fetch(`/ocr_tts/api/blocks/${blockId}/update/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text_content: newText
+                    })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('success', 'Текст оновлено успішно!');
+
+                    // Update the display text
+                    const textDiv = document.getElementById(`block-text-${blockId}`);
+                    const escapedText = newText
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#039;');
+                    textDiv.innerHTML = escapedText;
+
+                    // Update character count
+                    const charCount = document.getElementById(`block-char-count-${blockId}`);
+                    if (charCount) charCount.textContent = newText.length;
+
+                    // Update stored original text
+                    editorTextarea.dataset.originalText = newText;
+
+                    // Exit edit mode
+                    exitEditMode(blockId);
+                } else {
+                    showStatus('error', data.error || 'Помилка збереження тексту');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = '💾 Зберегти';
+                }
+            } catch (error) {
+                showStatus('error', 'Помилка: ' + error.message);
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Зберегти';
             }
         }
 
